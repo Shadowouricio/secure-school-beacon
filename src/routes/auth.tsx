@@ -33,6 +33,11 @@ function AuthPage() {
   const navigate = useNavigate();
   const [carregando, setCarregando] = useState(false);
 
+  async function irParaPainel() {
+    const perfil = await carregarPerfil();
+    navigate({ to: perfil === "autoridade" ? "/central" : "/" });
+  }
+
   async function entrar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -46,14 +51,14 @@ function AuthPage() {
       toast.error("Não foi possível entrar", { description: error.message });
       return;
     }
-    navigate({ to: "/" });
+    await irParaPainel();
   }
 
   async function cadastrar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     setCarregando(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: String(form.get("email")).trim(),
       password: String(form.get("senha")),
       options: {
@@ -69,6 +74,9 @@ function AuthPage() {
         },
       },
     });
+    if (!error && data.user) {
+      await supabase.from("user_roles").insert({ user_id: data.user.id, role: "escola" });
+    }
     setCarregando(false);
     if (error) {
       toast.error("Não foi possível cadastrar", { description: error.message });
@@ -77,6 +85,44 @@ function AuthPage() {
     toast.success("Instituição cadastrada com sucesso");
     navigate({ to: "/" });
   }
+
+  async function cadastrarAutoridade(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    setCarregando(true);
+    const { data, error } = await supabase.auth.signUp({
+      email: String(form.get("email")).trim(),
+      password: String(form.get("senha")),
+      options: { emailRedirectTo: window.location.origin },
+    });
+    if (error || !data.user) {
+      setCarregando(false);
+      toast.error("Não foi possível cadastrar", { description: error?.message });
+      return;
+    }
+    const uid = data.user.id;
+    const { error: erroPerfil } = await supabase.from("autoridades").insert({
+      id: uid,
+      nome_agente: String(form.get("nome_agente")).trim(),
+      orgao: orgao,
+      unidade: String(form.get("unidade") ?? "").trim(),
+      matricula: String(form.get("matricula") ?? "").trim(),
+      telefone: String(form.get("telefone") ?? "").trim(),
+      cidade: String(form.get("cidade") ?? "").trim(),
+      estado: String(form.get("estado") ?? "").trim(),
+    });
+    if (!erroPerfil) {
+      await supabase.from("user_roles").insert({ user_id: uid, role: "autoridade" });
+    }
+    setCarregando(false);
+    if (erroPerfil) {
+      toast.error("Não foi possível criar o perfil", { description: erroPerfil.message });
+      return;
+    }
+    toast.success("Órgão cadastrado com sucesso");
+    navigate({ to: "/central" });
+  }
+
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-5 py-10">
