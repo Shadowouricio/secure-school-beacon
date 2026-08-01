@@ -10,8 +10,9 @@ export type TipoOcorrencia = (typeof TIPOS_OCORRENCIA)[number]["value"];
 
 export const STATUS_ALERTA = [
   { value: "aguardando_resposta", label: "Aguardando resposta" },
-  { value: "equipe_acionada", label: "Equipe acionada" },
-  { value: "atendimento_iniciado", label: "Atendimento iniciado" },
+  { value: "recebimento_confirmado", label: "Recebimento confirmado" },
+  { value: "equipe_acionada", label: "Equipe em deslocamento" },
+  { value: "atendimento_iniciado", label: "Equipe no local" },
   { value: "encerrado", label: "Encerrado" },
 ] as const;
 
