@@ -11,6 +11,8 @@ export const Route = createFileRoute("/")({
   beforeLoad: async () => {
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) throw redirect({ to: "/auth" });
+    const perfil = await carregarPerfil();
+    if (perfil === "autoridade") throw redirect({ to: "/central" });
   },
   head: () => ({
     meta: [
