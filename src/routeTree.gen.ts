@@ -12,9 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedAtendimentosRouteImport } from './routes/_authenticated/atendimentos'
+import { Route as AuthenticatedCentralRouteImport } from './routes/_authenticated/central'
 import { Route as AuthenticatedHistoricoRouteImport } from './routes/_authenticated/historico'
 import { Route as AuthenticatedNovoAlertaRouteImport } from './routes/_authenticated/novo-alerta'
 import { Route as AuthenticatedAlertaIdRouteImport } from './routes/_authenticated/alerta.$id'
+import { Route as AuthenticatedOcorrenciaIdRouteImport } from './routes/_authenticated/ocorrencia.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,6 +32,17 @@ const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAtendimentosRoute =
+  AuthenticatedAtendimentosRouteImport.update({
+    id: '/atendimentos',
+    path: '/atendimentos',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCentralRoute = AuthenticatedCentralRouteImport.update({
+  id: '/central',
+  path: '/central',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedHistoricoRoute = AuthenticatedHistoricoRouteImport.update({
   id: '/historico',
@@ -45,43 +59,77 @@ const AuthenticatedAlertaIdRoute = AuthenticatedAlertaIdRouteImport.update({
   path: '/alerta/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOcorrenciaIdRoute =
+  AuthenticatedOcorrenciaIdRouteImport.update({
+    id: '/ocorrencia/$id',
+    path: '/ocorrencia/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/atendimentos': typeof AuthenticatedAtendimentosRoute
+  '/central': typeof AuthenticatedCentralRoute
   '/historico': typeof AuthenticatedHistoricoRoute
   '/novo-alerta': typeof AuthenticatedNovoAlertaRoute
   '/alerta/$id': typeof AuthenticatedAlertaIdRoute
+  '/ocorrencia/$id': typeof AuthenticatedOcorrenciaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/atendimentos': typeof AuthenticatedAtendimentosRoute
+  '/central': typeof AuthenticatedCentralRoute
   '/historico': typeof AuthenticatedHistoricoRoute
   '/novo-alerta': typeof AuthenticatedNovoAlertaRoute
   '/alerta/$id': typeof AuthenticatedAlertaIdRoute
+  '/ocorrencia/$id': typeof AuthenticatedOcorrenciaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/atendimentos': typeof AuthenticatedAtendimentosRoute
+  '/_authenticated/central': typeof AuthenticatedCentralRoute
   '/_authenticated/historico': typeof AuthenticatedHistoricoRoute
   '/_authenticated/novo-alerta': typeof AuthenticatedNovoAlertaRoute
   '/_authenticated/alerta/$id': typeof AuthenticatedAlertaIdRoute
+  '/_authenticated/ocorrencia/$id': typeof AuthenticatedOcorrenciaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/historico' | '/novo-alerta' | '/alerta/$id'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/atendimentos'
+    | '/central'
+    | '/historico'
+    | '/novo-alerta'
+    | '/alerta/$id'
+    | '/ocorrencia/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/historico' | '/novo-alerta' | '/alerta/$id'
+  to:
+    | '/'
+    | '/auth'
+    | '/atendimentos'
+    | '/central'
+    | '/historico'
+    | '/novo-alerta'
+    | '/alerta/$id'
+    | '/ocorrencia/$id'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/atendimentos'
+    | '/_authenticated/central'
     | '/_authenticated/historico'
     | '/_authenticated/novo-alerta'
     | '/_authenticated/alerta/$id'
+    | '/_authenticated/ocorrencia/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -113,6 +161,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/atendimentos': {
+      id: '/_authenticated/atendimentos'
+      path: '/atendimentos'
+      fullPath: '/atendimentos'
+      preLoaderRoute: typeof AuthenticatedAtendimentosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/central': {
+      id: '/_authenticated/central'
+      path: '/central'
+      fullPath: '/central'
+      preLoaderRoute: typeof AuthenticatedCentralRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/historico': {
       id: '/_authenticated/historico'
       path: '/historico'
@@ -134,19 +196,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAlertaIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/ocorrencia/$id': {
+      id: '/_authenticated/ocorrencia/$id'
+      path: '/ocorrencia/$id'
+      fullPath: '/ocorrencia/$id'
+      preLoaderRoute: typeof AuthenticatedOcorrenciaIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAtendimentosRoute: typeof AuthenticatedAtendimentosRoute
+  AuthenticatedCentralRoute: typeof AuthenticatedCentralRoute
   AuthenticatedHistoricoRoute: typeof AuthenticatedHistoricoRoute
   AuthenticatedNovoAlertaRoute: typeof AuthenticatedNovoAlertaRoute
   AuthenticatedAlertaIdRoute: typeof AuthenticatedAlertaIdRoute
+  AuthenticatedOcorrenciaIdRoute: typeof AuthenticatedOcorrenciaIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAtendimentosRoute: AuthenticatedAtendimentosRoute,
+  AuthenticatedCentralRoute: AuthenticatedCentralRoute,
   AuthenticatedHistoricoRoute: AuthenticatedHistoricoRoute,
   AuthenticatedNovoAlertaRoute: AuthenticatedNovoAlertaRoute,
   AuthenticatedAlertaIdRoute: AuthenticatedAlertaIdRoute,
+  AuthenticatedOcorrenciaIdRoute: AuthenticatedOcorrenciaIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

@@ -5,12 +5,15 @@ import { AlertTriangle, ChevronRight, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { corStatus, formatarDataHora, labelStatus, labelTipo } from "@/lib/alertas";
+import { carregarPerfil } from "@/lib/autoridades";
 
 export const Route = createFileRoute("/")({
   ssr: false,
   beforeLoad: async () => {
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) throw redirect({ to: "/auth" });
+    const perfil = await carregarPerfil();
+    if (perfil === "autoridade") throw redirect({ to: "/central" });
   },
   head: () => ({
     meta: [

@@ -10,8 +10,9 @@ export type TipoOcorrencia = (typeof TIPOS_OCORRENCIA)[number]["value"];
 
 export const STATUS_ALERTA = [
   { value: "aguardando_resposta", label: "Aguardando resposta" },
-  { value: "equipe_acionada", label: "Equipe acionada" },
-  { value: "atendimento_iniciado", label: "Atendimento iniciado" },
+  { value: "recebimento_confirmado", label: "Recebimento confirmado" },
+  { value: "equipe_acionada", label: "Equipe em deslocamento" },
+  { value: "atendimento_iniciado", label: "Equipe no local" },
   { value: "encerrado", label: "Encerrado" },
 ] as const;
 
@@ -29,6 +30,8 @@ export function corStatus(status: string) {
   switch (status) {
     case "aguardando_resposta":
       return "bg-warning/15 text-warning border-warning/40";
+    case "recebimento_confirmado":
+      return "bg-info/15 text-info border-info/40";
     case "equipe_acionada":
       return "bg-info/15 text-info border-info/40";
     case "atendimento_iniciado":
