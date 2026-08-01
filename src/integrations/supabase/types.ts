@@ -64,6 +64,87 @@ export type Database = {
           },
         ]
       }
+      atendimentos: {
+        Row: {
+          acao: Database["public"]["Enums"]["acao_atendimento"]
+          alerta_id: string
+          autoridade_id: string
+          created_at: string
+          id: string
+          observacao: string | null
+        }
+        Insert: {
+          acao: Database["public"]["Enums"]["acao_atendimento"]
+          alerta_id: string
+          autoridade_id: string
+          created_at?: string
+          id?: string
+          observacao?: string | null
+        }
+        Update: {
+          acao?: Database["public"]["Enums"]["acao_atendimento"]
+          alerta_id?: string
+          autoridade_id?: string
+          created_at?: string
+          id?: string
+          observacao?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "atendimentos_alerta_id_fkey"
+            columns: ["alerta_id"]
+            isOneToOne: false
+            referencedRelation: "alertas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atendimentos_autoridade_id_fkey"
+            columns: ["autoridade_id"]
+            isOneToOne: false
+            referencedRelation: "autoridades"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      autoridades: {
+        Row: {
+          cidade: string | null
+          created_at: string
+          estado: string | null
+          id: string
+          matricula: string | null
+          nome_agente: string
+          orgao: Database["public"]["Enums"]["orgao_tipo"]
+          telefone: string | null
+          unidade: string | null
+          updated_at: string
+        }
+        Insert: {
+          cidade?: string | null
+          created_at?: string
+          estado?: string | null
+          id: string
+          matricula?: string | null
+          nome_agente: string
+          orgao: Database["public"]["Enums"]["orgao_tipo"]
+          telefone?: string | null
+          unidade?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cidade?: string | null
+          created_at?: string
+          estado?: string | null
+          id?: string
+          matricula?: string | null
+          nome_agente?: string
+          orgao?: Database["public"]["Enums"]["orgao_tipo"]
+          telefone?: string | null
+          unidade?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       escolas: {
         Row: {
           cidade: string | null
@@ -103,16 +184,51 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      acao_atendimento:
+        | "recebimento_confirmado"
+        | "equipe_em_deslocamento"
+        | "chegada_ao_local"
+        | "ocorrencia_finalizada"
+      app_role: "escola" | "autoridade"
+      orgao_tipo: "policia" | "samu" | "bombeiros" | "conselho_tutelar"
       status_alerta:
         | "aguardando_resposta"
+        | "recebimento_confirmado"
         | "equipe_acionada"
         | "atendimento_iniciado"
         | "encerrado"
@@ -249,8 +365,17 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      acao_atendimento: [
+        "recebimento_confirmado",
+        "equipe_em_deslocamento",
+        "chegada_ao_local",
+        "ocorrencia_finalizada",
+      ],
+      app_role: ["escola", "autoridade"],
+      orgao_tipo: ["policia", "samu", "bombeiros", "conselho_tutelar"],
       status_alerta: [
         "aguardando_resposta",
+        "recebimento_confirmado",
         "equipe_acionada",
         "atendimento_iniciado",
         "encerrado",
