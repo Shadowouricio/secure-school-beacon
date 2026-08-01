@@ -33,6 +33,8 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const [carregando, setCarregando] = useState(false);
+  const [orgao, setOrgao] = useState<Orgao>("policia");
+
 
   async function irParaPainel() {
     const perfil = await carregarPerfil();
