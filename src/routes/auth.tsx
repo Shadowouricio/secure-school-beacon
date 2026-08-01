@@ -140,10 +140,12 @@ function AuthPage() {
       </div>
 
       <Tabs defaultValue="login">
-        <TabsList className="grid w-full grid-cols-2 bg-surface">
+        <TabsList className="grid w-full grid-cols-3 bg-surface">
           <TabsTrigger value="login">Entrar</TabsTrigger>
-          <TabsTrigger value="cadastro">Cadastrar escola</TabsTrigger>
+          <TabsTrigger value="cadastro">Escola</TabsTrigger>
+          <TabsTrigger value="autoridade">Autoridade</TabsTrigger>
         </TabsList>
+
 
         <TabsContent value="login" className="mt-6">
           <form onSubmit={entrar} className="space-y-4">
