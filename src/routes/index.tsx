@@ -5,6 +5,7 @@ import { AlertTriangle, ChevronRight, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { corStatus, formatarDataHora, labelStatus, labelTipo } from "@/lib/alertas";
+import { carregarPerfil } from "@/lib/autoridades";
 
 export const Route = createFileRoute("/")({
   ssr: false,
