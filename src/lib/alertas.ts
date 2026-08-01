@@ -30,6 +30,8 @@ export function corStatus(status: string) {
   switch (status) {
     case "aguardando_resposta":
       return "bg-warning/15 text-warning border-warning/40";
+    case "recebimento_confirmado":
+      return "bg-info/15 text-info border-info/40";
     case "equipe_acionada":
       return "bg-info/15 text-info border-info/40";
     case "atendimento_iniciado":
