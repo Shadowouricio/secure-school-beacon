@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedHistoricoRouteImport } from './routes/_authenticated/historico'
 import { Route as AuthenticatedNovoAlertaRouteImport } from './routes/_authenticated/novo-alerta'
+import { Route as AuthenticatedAlertaIdRouteImport } from './routes/_authenticated/alerta.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -39,18 +40,25 @@ const AuthenticatedNovoAlertaRoute = AuthenticatedNovoAlertaRouteImport.update({
   path: '/novo-alerta',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAlertaIdRoute = AuthenticatedAlertaIdRouteImport.update({
+  id: '/alerta/$id',
+  path: '/alerta/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/historico': typeof AuthenticatedHistoricoRoute
   '/novo-alerta': typeof AuthenticatedNovoAlertaRoute
+  '/alerta/$id': typeof AuthenticatedAlertaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/historico': typeof AuthenticatedHistoricoRoute
   '/novo-alerta': typeof AuthenticatedNovoAlertaRoute
+  '/alerta/$id': typeof AuthenticatedAlertaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,12 +67,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/historico': typeof AuthenticatedHistoricoRoute
   '/_authenticated/novo-alerta': typeof AuthenticatedNovoAlertaRoute
+  '/_authenticated/alerta/$id': typeof AuthenticatedAlertaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/historico' | '/novo-alerta'
+  fullPaths: '/' | '/auth' | '/historico' | '/novo-alerta' | '/alerta/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/historico' | '/novo-alerta'
+  to: '/' | '/auth' | '/historico' | '/novo-alerta' | '/alerta/$id'
   id:
     | '__root__'
     | '/'
@@ -72,6 +81,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/historico'
     | '/_authenticated/novo-alerta'
+    | '/_authenticated/alerta/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -117,17 +127,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNovoAlertaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/alerta/$id': {
+      id: '/_authenticated/alerta/$id'
+      path: '/alerta/$id'
+      fullPath: '/alerta/$id'
+      preLoaderRoute: typeof AuthenticatedAlertaIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedHistoricoRoute: typeof AuthenticatedHistoricoRoute
   AuthenticatedNovoAlertaRoute: typeof AuthenticatedNovoAlertaRoute
+  AuthenticatedAlertaIdRoute: typeof AuthenticatedAlertaIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHistoricoRoute: AuthenticatedHistoricoRoute,
   AuthenticatedNovoAlertaRoute: AuthenticatedNovoAlertaRoute,
+  AuthenticatedAlertaIdRoute: AuthenticatedAlertaIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
