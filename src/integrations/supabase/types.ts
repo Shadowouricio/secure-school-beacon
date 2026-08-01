@@ -14,7 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      alertas: {
+        Row: {
+          created_at: string
+          descricao: string
+          endereco_aproximado: string | null
+          escola_id: string
+          id: string
+          latitude: number | null
+          longitude: number | null
+          precisao_metros: number | null
+          status: Database["public"]["Enums"]["status_alerta"]
+          tipo: Database["public"]["Enums"]["tipo_ocorrencia"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao: string
+          endereco_aproximado?: string | null
+          escola_id: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          precisao_metros?: number | null
+          status?: Database["public"]["Enums"]["status_alerta"]
+          tipo: Database["public"]["Enums"]["tipo_ocorrencia"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string
+          endereco_aproximado?: string | null
+          escola_id?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          precisao_metros?: number | null
+          status?: Database["public"]["Enums"]["status_alerta"]
+          tipo?: Database["public"]["Enums"]["tipo_ocorrencia"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escolas: {
+        Row: {
+          cidade: string | null
+          cnpj: string | null
+          created_at: string
+          endereco: string | null
+          estado: string | null
+          id: string
+          nome: string
+          responsavel: string | null
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          cidade?: string | null
+          cnpj?: string | null
+          created_at?: string
+          endereco?: string | null
+          estado?: string | null
+          id: string
+          nome: string
+          responsavel?: string | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cidade?: string | null
+          cnpj?: string | null
+          created_at?: string
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          nome?: string
+          responsavel?: string | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +111,17 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      status_alerta:
+        | "aguardando_resposta"
+        | "equipe_acionada"
+        | "atendimento_iniciado"
+        | "encerrado"
+      tipo_ocorrencia:
+        | "ameaca_seguranca"
+        | "invasao"
+        | "emergencia_medica"
+        | "incendio"
+        | "outro"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +248,20 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      status_alerta: [
+        "aguardando_resposta",
+        "equipe_acionada",
+        "atendimento_iniciado",
+        "encerrado",
+      ],
+      tipo_ocorrencia: [
+        "ameaca_seguranca",
+        "invasao",
+        "emergencia_medica",
+        "incendio",
+        "outro",
+      ],
+    },
   },
 } as const
