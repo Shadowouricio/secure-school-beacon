@@ -186,7 +186,57 @@ function AuthPage() {
             </Button>
           </form>
         </TabsContent>
+
+        <TabsContent value="autoridade" className="mt-6">
+          <form onSubmit={cadastrarAutoridade} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                Órgão responsável
+              </Label>
+              <div className="grid grid-cols-2 gap-2">
+                {ORGAOS.map((o) => (
+                  <button
+                    key={o.value}
+                    type="button"
+                    onClick={() => setOrgao(o.value)}
+                    className={`rounded-xl border px-3 py-3 text-sm font-medium transition-colors ${
+                      orgao === o.value
+                        ? "border-info bg-info/15 text-foreground"
+                        : "border-border bg-surface text-muted-foreground"
+                    }`}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Campo id="nome-agente" name="nome_agente" label="Nome do agente" required />
+            <div className="grid grid-cols-2 gap-3">
+              <Campo id="unidade" name="unidade" label="Unidade / Batalhão" />
+              <Campo id="matricula" name="matricula" label="Matrícula" />
+            </div>
+            <div className="grid grid-cols-[1fr_90px] gap-3">
+              <Campo id="cidade-aut" name="cidade" label="Cidade" />
+              <Campo id="estado-aut" name="estado" label="UF" maxLength={2} />
+            </div>
+            <Campo id="telefone-aut" name="telefone" label="Telefone de plantão" />
+            <Campo id="email-aut" name="email" label="E-mail funcional" type="email" required />
+            <Campo
+              id="senha-aut"
+              name="senha"
+              label="Senha"
+              type="password"
+              required
+              minLength={8}
+            />
+            <Button type="submit" size="lg" className="w-full" disabled={carregando}>
+              {carregando ? <Loader2 className="size-4 animate-spin" /> : null}
+              Cadastrar órgão
+            </Button>
+          </form>
+        </TabsContent>
       </Tabs>
+
     </div>
   );
 }
