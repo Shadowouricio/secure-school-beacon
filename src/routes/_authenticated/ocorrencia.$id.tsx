@@ -144,7 +144,7 @@ function Ocorrencia() {
         <p className="mt-2 flex items-start gap-2 text-sm text-muted-foreground">
           <MapPin className="mt-0.5 size-4 shrink-0" />
           <span>
-            {escola?.endereco ?? "Endereço não informado"}
+            {escola?.endereco || "Endereço não informado"}
             {escola?.cidade ? ` — ${escola.cidade}/${escola.estado ?? ""}` : ""}
           </span>
         </p>

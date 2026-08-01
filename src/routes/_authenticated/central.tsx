@@ -128,7 +128,7 @@ function Central() {
                       <p className="mt-1 truncate text-sm">{escola?.nome ?? "Escola"}</p>
                       <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
                         <MapPin className="size-3" />
-                        {escola?.endereco ?? "Endereço não informado"}
+                        {escola?.endereco || "Endereço não informado"}
                         {escola?.cidade ? ` — ${escola.cidade}/${escola.estado ?? ""}` : ""}
                       </p>
                       <p className="mt-1 text-xs text-muted-foreground">
