@@ -27,6 +27,7 @@ import {
   type Localizacao,
   type TipoOcorrencia,
 } from "@/lib/alertas";
+import { DESTINOS_SUGERIDOS, ORGAOS, labelOrgao, type Orgao } from "@/lib/autoridades";
 
 export const Route = createFileRoute("/_authenticated/novo-alerta")({
   head: () => ({
