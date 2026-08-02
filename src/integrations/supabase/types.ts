@@ -25,6 +25,7 @@ export type Database = {
           longitude: number | null
           orgaos_destino: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros: number | null
+          prioridade: Database["public"]["Enums"]["prioridade_alerta"]
           status: Database["public"]["Enums"]["status_alerta"]
           tipo: Database["public"]["Enums"]["tipo_ocorrencia"]
           updated_at: string
@@ -39,6 +40,7 @@ export type Database = {
           longitude?: number | null
           orgaos_destino?: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros?: number | null
+          prioridade?: Database["public"]["Enums"]["prioridade_alerta"]
           status?: Database["public"]["Enums"]["status_alerta"]
           tipo: Database["public"]["Enums"]["tipo_ocorrencia"]
           updated_at?: string
@@ -53,6 +55,7 @@ export type Database = {
           longitude?: number | null
           orgaos_destino?: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros?: number | null
+          prioridade?: Database["public"]["Enums"]["prioridade_alerta"]
           status?: Database["public"]["Enums"]["status_alerta"]
           tipo?: Database["public"]["Enums"]["tipo_ocorrencia"]
           updated_at?: string
@@ -233,6 +236,7 @@ export type Database = {
         | "ocorrencia_finalizada"
       app_role: "escola" | "autoridade"
       orgao_tipo: "policia" | "samu" | "bombeiros" | "conselho_tutelar"
+      prioridade_alerta: "baixa" | "media" | "alta" | "vermelho"
       status_alerta:
         | "aguardando_resposta"
         | "recebimento_confirmado"
@@ -380,6 +384,7 @@ export const Constants = {
       ],
       app_role: ["escola", "autoridade"],
       orgao_tipo: ["policia", "samu", "bombeiros", "conselho_tutelar"],
+      prioridade_alerta: ["baixa", "media", "alta", "vermelho"],
       status_alerta: [
         "aguardando_resposta",
         "recebimento_confirmado",
