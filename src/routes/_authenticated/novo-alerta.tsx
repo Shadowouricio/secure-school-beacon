@@ -131,6 +131,7 @@ function NovoAlerta() {
         latitude: local?.latitude ?? null,
         longitude: local?.longitude ?? null,
         precisao_metros: local?.precisao_metros ?? null,
+        orgaos_destino: destinos,
       })
       .select("id")
       .single();
