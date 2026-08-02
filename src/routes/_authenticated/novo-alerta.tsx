@@ -283,7 +283,9 @@ function NovoAlerta() {
                     : "não disponível"}
                 </p>
                 <p className="pt-1">
-                  O alerta será enviado imediatamente aos órgãos cadastrados.
+                  O alerta será enviado imediatamente para:{" "}
+                  {destinos.map((d) => labelOrgao(d)).join(", ") || "—"}.
+
                 </p>
               </div>
             </AlertDialogDescription>
