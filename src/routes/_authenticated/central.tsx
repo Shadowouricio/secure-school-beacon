@@ -36,19 +36,32 @@ function Central() {
   const { data: autoridade } = useQuery({
     queryKey: ["autoridade"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("autoridades").select("*").maybeSingle();
+      const { data: userData } = await supabase.auth.getUser();
+      const uid = userData.user?.id;
+      if (!uid) return null;
+      const { data, error } = await supabase
+        .from("autoridades")
+        .select("*")
+        .eq("id", uid)
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
   });
 
+  const orgao = autoridade?.orgao ?? null;
+  const meuId = autoridade?.id ?? null;
+
   const { data: alertas, isLoading } = useQuery({
-    queryKey: ["central", "ativos"],
+    enabled: !!orgao,
+    queryKey: ["central", "ativos", orgao],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("alertas")
         .select("*, escolas(nome, endereco, cidade, estado, telefone)")
         .neq("status", "encerrado")
+        .neq("escola_id", meuId!)
+        .overlaps("orgaos_destino", [orgao!])
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
@@ -56,14 +69,22 @@ function Central() {
   });
 
   useEffect(() => {
+    if (!orgao || !meuId) return;
     const canal = supabase
       .channel("central-alertas")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "alertas" },
         (payload) => {
+          const novo = payload.new as {
+            tipo: string;
+            escola_id: string;
+            orgaos_destino: string[] | null;
+          };
+          // Só notifica agentes do órgão destinatário e nunca o próprio remetente.
+          if (novo.escola_id === meuId) return;
+          if (!novo.orgaos_destino?.includes(orgao)) return;
           tocarAlerta();
-          const novo = payload.new as { tipo: string };
           toast.error("🚨 NOVO ALERTA DE EMERGÊNCIA", {
             description: labelTipo(novo.tipo),
             duration: 15000,
@@ -81,7 +102,8 @@ function Central() {
     return () => {
       supabase.removeChannel(canal);
     };
-  }, [queryClient]);
+  }, [queryClient, orgao, meuId]);
+
 
   return (
     <AutoridadeShell subtitulo={autoridade ? labelOrgao(autoridade.orgao) : "Autoridades"}>

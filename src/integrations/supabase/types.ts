@@ -23,6 +23,7 @@ export type Database = {
           id: string
           latitude: number | null
           longitude: number | null
+          orgaos_destino: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros: number | null
           status: Database["public"]["Enums"]["status_alerta"]
           tipo: Database["public"]["Enums"]["tipo_ocorrencia"]
@@ -36,6 +37,7 @@ export type Database = {
           id?: string
           latitude?: number | null
           longitude?: number | null
+          orgaos_destino?: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros?: number | null
           status?: Database["public"]["Enums"]["status_alerta"]
           tipo: Database["public"]["Enums"]["tipo_ocorrencia"]
@@ -49,6 +51,7 @@ export type Database = {
           id?: string
           latitude?: number | null
           longitude?: number | null
+          orgaos_destino?: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros?: number | null
           status?: Database["public"]["Enums"]["status_alerta"]
           tipo?: Database["public"]["Enums"]["tipo_ocorrencia"]
@@ -210,6 +213,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      alerta_destinado_a: {
+        Args: { _alerta_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

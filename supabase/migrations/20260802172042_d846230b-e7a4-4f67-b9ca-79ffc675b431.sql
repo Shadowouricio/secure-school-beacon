@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.alerta_destinado_a(uuid, uuid) FROM PUBLIC, anon, authenticated;

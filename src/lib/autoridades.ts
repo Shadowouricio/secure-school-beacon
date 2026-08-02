@@ -13,6 +13,15 @@ export function labelOrgao(orgao: string) {
   return ORGAOS.find((o) => o.value === orgao)?.label ?? orgao;
 }
 
+/** Órgãos sugeridos como destinatários conforme o tipo de ocorrência. */
+export const DESTINOS_SUGERIDOS: Record<string, Orgao[]> = {
+  ameaca_seguranca: ["policia"],
+  invasao: ["policia"],
+  emergencia_medica: ["samu"],
+  incendio: ["bombeiros"],
+  outro: ["policia"],
+};
+
 export const ACOES = [
   {
     acao: "recebimento_confirmado",

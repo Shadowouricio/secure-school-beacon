@@ -27,6 +27,7 @@ import {
   type Localizacao,
   type TipoOcorrencia,
 } from "@/lib/alertas";
+import { DESTINOS_SUGERIDOS, ORGAOS, labelOrgao, type Orgao } from "@/lib/autoridades";
 
 export const Route = createFileRoute("/_authenticated/novo-alerta")({
   head: () => ({
@@ -52,6 +53,19 @@ function NovoAlerta() {
   const queryClient = useQueryClient();
 
   const [tipo, setTipo] = useState<TipoOcorrencia | null>(null);
+  const [destinos, setDestinos] = useState<Orgao[]>([]);
+
+  function selecionarTipo(t: TipoOcorrencia) {
+    setTipo(t);
+    setDestinos(DESTINOS_SUGERIDOS[t] ?? []);
+  }
+
+  function alternarDestino(orgao: Orgao) {
+    setDestinos((atual) =>
+      atual.includes(orgao) ? atual.filter((o) => o !== orgao) : [...atual, orgao],
+    );
+  }
+
   const [descricao, setDescricao] = useState("");
   const [local, setLocal] = useState<Localizacao | null>(null);
   const [erroLocal, setErroLocal] = useState<string | null>(null);
@@ -88,6 +102,11 @@ function NovoAlerta() {
       toast.error("Descreva brevemente a situação");
       return;
     }
+    if (destinos.length === 0) {
+      toast.error("Selecione ao menos um órgão destinatário");
+      return;
+    }
+
     setAgora(new Date().toISOString());
     setConfirmando(true);
   }
@@ -112,6 +131,7 @@ function NovoAlerta() {
         latitude: local?.latitude ?? null,
         longitude: local?.longitude ?? null,
         precisao_metros: local?.precisao_metros ?? null,
+        orgaos_destino: destinos,
       })
       .select("id")
       .single();
@@ -146,7 +166,7 @@ function NovoAlerta() {
               <button
                 key={t.value}
                 type="button"
-                onClick={() => setTipo(t.value)}
+                onClick={() => selecionarTipo(t.value)}
                 className={`rounded-xl border p-3 text-left text-sm font-medium transition-colors ${
                   ativo
                     ? "border-emergency bg-emergency/15 text-foreground"
@@ -159,6 +179,36 @@ function NovoAlerta() {
           })}
         </div>
       </div>
+
+      <div className="mt-5">
+        <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+          Órgãos que receberão o alerta
+        </Label>
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          {ORGAOS.map((o) => {
+            const ativo = destinos.includes(o.value);
+            return (
+              <button
+                key={o.value}
+                type="button"
+                aria-pressed={ativo}
+                onClick={() => alternarDestino(o.value)}
+                className={`rounded-xl border p-3 text-left text-sm font-medium transition-colors ${
+                  ativo
+                    ? "border-info bg-info/15 text-foreground"
+                    : "border-border bg-surface text-muted-foreground"
+                }`}
+              >
+                {o.label}
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Somente agentes dos órgãos selecionados receberão esta notificação.
+        </p>
+      </div>
+
 
       <div className="mt-5 space-y-1.5">
         <Label htmlFor="descricao" className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -233,7 +283,9 @@ function NovoAlerta() {
                     : "não disponível"}
                 </p>
                 <p className="pt-1">
-                  O alerta será enviado imediatamente aos órgãos cadastrados.
+                  O alerta será enviado imediatamente para:{" "}
+                  {destinos.map((d) => labelOrgao(d)).join(", ") || "—"}.
+
                 </p>
               </div>
             </AlertDialogDescription>
