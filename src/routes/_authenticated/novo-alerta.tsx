@@ -102,6 +102,11 @@ function NovoAlerta() {
       toast.error("Descreva brevemente a situação");
       return;
     }
+    if (destinos.length === 0) {
+      toast.error("Selecione ao menos um órgão destinatário");
+      return;
+    }
+
     setAgora(new Date().toISOString());
     setConfirmando(true);
   }
