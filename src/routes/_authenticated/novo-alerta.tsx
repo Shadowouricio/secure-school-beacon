@@ -53,6 +53,19 @@ function NovoAlerta() {
   const queryClient = useQueryClient();
 
   const [tipo, setTipo] = useState<TipoOcorrencia | null>(null);
+  const [destinos, setDestinos] = useState<Orgao[]>([]);
+
+  function selecionarTipo(t: TipoOcorrencia) {
+    setTipo(t);
+    setDestinos(DESTINOS_SUGERIDOS[t] ?? []);
+  }
+
+  function alternarDestino(orgao: Orgao) {
+    setDestinos((atual) =>
+      atual.includes(orgao) ? atual.filter((o) => o !== orgao) : [...atual, orgao],
+    );
+  }
+
   const [descricao, setDescricao] = useState("");
   const [local, setLocal] = useState<Localizacao | null>(null);
   const [erroLocal, setErroLocal] = useState<string | null>(null);
