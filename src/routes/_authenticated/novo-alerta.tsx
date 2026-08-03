@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Clock, Loader2, MapPin, Shield, Siren, Stethoscope, Users } from "lucide-react";
+import { CheckCircle2, Clock, Flame, Loader2, MapPin, Shield, Siren, Stethoscope, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -72,6 +72,14 @@ const SERVICOS: Servico[] = [
     Icone: Stethoscope,
     tipoPadrao: "emergencia_medica",
     classe: "bg-emergency/15 border-emergency/50 text-emergency hover:bg-emergency/25",
+  },
+  {
+    orgao: "bombeiros",
+    nome: "Bombeiros",
+    emoji: "🚒",
+    Icone: Flame,
+    tipoPadrao: "incendio",
+    classe: "bg-emergency/10 border-emergency/40 text-emergency hover:bg-emergency/20",
   },
   {
     orgao: "conselho_tutelar",

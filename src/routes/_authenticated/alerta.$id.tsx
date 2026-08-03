@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
+import { useRealtimeAlertas } from "@/hooks/use-realtime-alertas";
 import { STATUS_ALERTA, corStatus, formatarDataHora, labelStatus, labelTipo } from "@/lib/alertas";
 
 export const Route = createFileRoute("/_authenticated/alerta/$id")({
@@ -43,6 +44,10 @@ function DetalheAlerta() {
       return data;
     },
   });
+
+  useRealtimeAlertas(`alerta-${id}`, [["alertas"]]);
+
+
 
   async function encerrar() {
     const { error } = await supabase

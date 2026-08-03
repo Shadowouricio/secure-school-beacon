@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ChevronRight, MapPin, Siren } from "lucide-react";
 import { toast } from "sonner";
 
@@ -68,6 +68,8 @@ function Central() {
     },
   });
 
+  const [novos, setNovos] = useState<string[]>([]);
+
   useEffect(() => {
     if (!orgao || !meuId) return;
     const canal = supabase
@@ -77,6 +79,7 @@ function Central() {
         { event: "INSERT", schema: "public", table: "alertas" },
         (payload) => {
           const novo = payload.new as {
+            id: string;
             tipo: string;
             escola_id: string;
             orgaos_destino: string[] | null;
@@ -89,12 +92,19 @@ function Central() {
             description: labelTipo(novo.tipo),
             duration: 15000,
           });
+          setNovos((atuais) => [...atuais, novo.id]);
+          setTimeout(() => setNovos((atuais) => atuais.filter((id) => id !== novo.id)), 60000);
           queryClient.invalidateQueries({ queryKey: ["central"] });
         },
       )
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "alertas" },
+        () => queryClient.invalidateQueries({ queryKey: ["central"] }),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "atendimentos" },
         () => queryClient.invalidateQueries({ queryKey: ["central"] }),
       )
       .subscribe();
@@ -132,21 +142,32 @@ function Central() {
           {alertas.map((a) => {
             const escola = a.escolas as { nome: string; endereco: string | null; cidade: string | null; estado: string | null } | null;
             const urgente = a.status === "aguardando_resposta";
+            const recemChegado = novos.includes(a.id);
             return (
               <li key={a.id}>
                 <Link
                   to="/ocorrencia/$id"
                   params={{ id: a.id }}
                   className={`block rounded-2xl border bg-surface p-4 ${
-                    urgente ? "border-emergency pulse-emergency" : "border-border"
+                    recemChegado
+                      ? "animate-fade-in border-emergency ring-2 ring-emergency shadow-lg"
+                      : urgente
+                        ? "border-emergency pulse-emergency"
+                        : "border-border"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
+                      {recemChegado ? (
+                        <span className="mb-1 inline-block rounded-full bg-emergency px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emergency-foreground">
+                          Novo
+                        </span>
+                      ) : null}
                       <p className="flex items-center gap-1.5 font-display font-bold">
                         <Siren className={`size-4 ${urgente ? "text-emergency" : "text-muted-foreground"}`} />
                         {labelTipo(a.tipo)}
                       </p>
+
                       <p className="mt-1 truncate text-sm">{escola?.nome ?? "Escola"}</p>
                       <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
                         <MapPin className="size-3" />
