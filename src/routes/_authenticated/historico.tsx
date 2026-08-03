@@ -39,6 +39,10 @@ function Historico() {
     },
   });
 
+  useRealtimeAlertas("escola-historico", [["alertas"]]);
+
+
+
   return (
     <AppShell titulo="Histórico">
       <h1 className="font-display text-xl font-bold">Ocorrências enviadas</h1>

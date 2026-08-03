@@ -63,6 +63,10 @@ function Ocorrencia() {
     },
   });
 
+  useRealtimeAlertas(`ocorrencia-${id}`, [["central"], ["atendimentos"]]);
+
+
+
   async function registrar(acao: (typeof ACOES)[number]) {
     setSalvando(acao.acao);
     const { data: userData } = await supabase.auth.getUser();
