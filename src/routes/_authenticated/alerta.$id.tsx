@@ -45,6 +45,10 @@ function DetalheAlerta() {
     },
   });
 
+  useRealtimeAlertas(`alerta-${id}`, [["alertas"]]);
+
+
+
   async function encerrar() {
     const { error } = await supabase
       .from("alertas")
