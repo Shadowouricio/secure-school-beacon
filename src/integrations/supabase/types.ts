@@ -243,14 +243,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      autoridade_pode_acessar_alerta: {
-        Args: {
-          _escola_id: string
-          _orgaos_destino: Database["public"]["Enums"]["orgao_tipo"][]
-          _user_id: string
-        }
-        Returns: boolean
-      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
