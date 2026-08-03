@@ -68,6 +68,8 @@ function Central() {
     },
   });
 
+  const [novos, setNovos] = useState<string[]>([]);
+
   useEffect(() => {
     if (!orgao || !meuId) return;
     const canal = supabase
@@ -77,6 +79,7 @@ function Central() {
         { event: "INSERT", schema: "public", table: "alertas" },
         (payload) => {
           const novo = payload.new as {
+            id: string;
             tipo: string;
             escola_id: string;
             orgaos_destino: string[] | null;
@@ -89,12 +92,19 @@ function Central() {
             description: labelTipo(novo.tipo),
             duration: 15000,
           });
+          setNovos((atuais) => [...atuais, novo.id]);
+          setTimeout(() => setNovos((atuais) => atuais.filter((id) => id !== novo.id)), 60000);
           queryClient.invalidateQueries({ queryKey: ["central"] });
         },
       )
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "alertas" },
+        () => queryClient.invalidateQueries({ queryKey: ["central"] }),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "atendimentos" },
         () => queryClient.invalidateQueries({ queryKey: ["central"] }),
       )
       .subscribe();
