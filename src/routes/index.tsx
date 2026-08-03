@@ -57,6 +57,10 @@ function Inicio() {
     },
   });
 
+  useRealtimeAlertas("escola-inicio", [["alertas"]]);
+
+
+
   return (
     <AppShell titulo={escola?.nome ?? "Escola"}>
       <section className="rounded-2xl border border-border bg-surface p-4">
