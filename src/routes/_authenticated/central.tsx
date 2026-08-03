@@ -142,21 +142,32 @@ function Central() {
           {alertas.map((a) => {
             const escola = a.escolas as { nome: string; endereco: string | null; cidade: string | null; estado: string | null } | null;
             const urgente = a.status === "aguardando_resposta";
+            const recemChegado = novos.includes(a.id);
             return (
               <li key={a.id}>
                 <Link
                   to="/ocorrencia/$id"
                   params={{ id: a.id }}
                   className={`block rounded-2xl border bg-surface p-4 ${
-                    urgente ? "border-emergency pulse-emergency" : "border-border"
+                    recemChegado
+                      ? "animate-fade-in border-emergency ring-2 ring-emergency shadow-lg"
+                      : urgente
+                        ? "border-emergency pulse-emergency"
+                        : "border-border"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
+                      {recemChegado ? (
+                        <span className="mb-1 inline-block rounded-full bg-emergency px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emergency-foreground">
+                          Novo
+                        </span>
+                      ) : null}
                       <p className="flex items-center gap-1.5 font-display font-bold">
                         <Siren className={`size-4 ${urgente ? "text-emergency" : "text-muted-foreground"}`} />
                         {labelTipo(a.tipo)}
                       </p>
+
                       <p className="mt-1 truncate text-sm">{escola?.nome ?? "Escola"}</p>
                       <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
                         <MapPin className="size-3" />
