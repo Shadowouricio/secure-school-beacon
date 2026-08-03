@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AutoridadeShell } from "@/components/AutoridadeShell";
 import { Button } from "@/components/ui/button";
+import { useRealtimeAlertas } from "@/hooks/use-realtime-alertas";
 import { corStatus, formatarDataHora, labelStatus, labelTipo } from "@/lib/alertas";
 import { ACOES, labelAcao } from "@/lib/autoridades";
 
