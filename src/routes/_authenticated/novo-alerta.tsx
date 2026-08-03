@@ -74,6 +74,14 @@ const SERVICOS: Servico[] = [
     classe: "bg-emergency/15 border-emergency/50 text-emergency hover:bg-emergency/25",
   },
   {
+    orgao: "bombeiros",
+    nome: "Bombeiros",
+    emoji: "🚒",
+    Icone: Flame,
+    tipoPadrao: "incendio",
+    classe: "bg-emergency/10 border-emergency/40 text-emergency hover:bg-emergency/20",
+  },
+  {
     orgao: "conselho_tutelar",
     nome: "Conselho Tutelar",
     emoji: "👨‍👩‍👧",

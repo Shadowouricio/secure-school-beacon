@@ -4,6 +4,7 @@ import { AlertTriangle, ChevronRight, MapPin } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
+import { useRealtimeAlertas } from "@/hooks/use-realtime-alertas";
 import { corStatus, formatarDataHora, labelStatus, labelTipo } from "@/lib/alertas";
 import { carregarPerfil } from "@/lib/autoridades";
 
