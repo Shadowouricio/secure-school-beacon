@@ -1,15 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Clock, ExternalLink, MapPin, Phone, School } from "lucide-react";
+import { Clock, ExternalLink, MapPin, Navigation, Phone, School } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { AutoridadeShell } from "@/components/AutoridadeShell";
 import { Button } from "@/components/ui/button";
 import { useRealtimeAlertas } from "@/hooks/use-realtime-alertas";
-import { corStatus, formatarDataHora, labelStatus, labelTipo } from "@/lib/alertas";
-import { ACOES, labelAcao } from "@/lib/autoridades";
+import {
+  abrirNavegacao,
+  corStatus,
+  formatarDataHora,
+  labelPrioridade,
+  labelStatus,
+  labelTipo,
+} from "@/lib/alertas";
+import { ACOES, ACOES_STATUS, labelAcao, labelOrgao } from "@/lib/autoridades";
+
 
 export const Route = createFileRoute("/_authenticated/ocorrencia/$id")({
   head: () => ({
