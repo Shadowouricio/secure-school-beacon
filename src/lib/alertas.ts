@@ -9,14 +9,27 @@ export const TIPOS_OCORRENCIA = [
 export type TipoOcorrencia = (typeof TIPOS_OCORRENCIA)[number]["value"];
 
 export const STATUS_ALERTA = [
-  { value: "aguardando_resposta", label: "Aguardando resposta" },
-  { value: "recebimento_confirmado", label: "Recebimento confirmado" },
-  { value: "equipe_acionada", label: "Equipe em deslocamento" },
-  { value: "atendimento_iniciado", label: "Equipe no local" },
-  { value: "encerrado", label: "Encerrado" },
+  { value: "aguardando_resposta", label: "Aguardando atendimento" },
+  { value: "recebimento_confirmado", label: "Recebido" },
+  { value: "equipe_acionada", label: "Em atendimento" },
+  { value: "atendimento_iniciado", label: "Em atendimento" },
+  { value: "encerrado", label: "Finalizado" },
 ] as const;
 
 export type StatusAlerta = (typeof STATUS_ALERTA)[number]["value"];
+
+/** Etapas exibidas na linha do tempo (status agrupados em 4 fases). */
+export const ETAPAS_ATENDIMENTO = [
+  { label: "Aguardando atendimento", status: ["aguardando_resposta"] },
+  { label: "Recebido", status: ["recebimento_confirmado"] },
+  { label: "Em atendimento", status: ["equipe_acionada", "atendimento_iniciado"] },
+  { label: "Finalizado", status: ["encerrado"] },
+] as const;
+
+export function etapaAtual(status: string) {
+  const i = ETAPAS_ATENDIMENTO.findIndex((e) => (e.status as readonly string[]).includes(status));
+  return i < 0 ? 0 : i;
+}
 
 export function labelTipo(tipo: string) {
   return TIPOS_OCORRENCIA.find((t) => t.value === tipo)?.label ?? "Outro";
@@ -25,6 +38,7 @@ export function labelTipo(tipo: string) {
 export function labelStatus(status: string) {
   return STATUS_ALERTA.find((s) => s.value === status)?.label ?? status;
 }
+
 
 export function corStatus(status: string) {
   switch (status) {
