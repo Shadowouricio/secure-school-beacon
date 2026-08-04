@@ -104,6 +104,8 @@ function Inicio() {
                 <Link
                   to="/alerta/$id"
                   params={{ id: a.id }}
+                  search={{ enviado: false }}
+
                   className="flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-3"
                 >
                   <div className="min-w-0">
