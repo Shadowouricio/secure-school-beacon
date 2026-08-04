@@ -81,7 +81,7 @@ function DetalheAlerta() {
     );
   }
 
-  const indiceAtual = STATUS_ALERTA.findIndex((s) => s.value === alerta.status);
+  const indiceAtual = etapaAtual(alerta.status);
 
   return (
     <AppShell titulo="Ocorrência">
