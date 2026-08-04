@@ -182,9 +182,40 @@ function NovoAlerta() {
 
     const { data: escola } = await supabase
       .from("escolas")
-      .select("nome, responsavel, endereco, cidade, estado")
+      .select("nome, responsavel, endereco, cidade, estado, latitude, longitude")
       .eq("id", escolaId)
       .maybeSingle();
+
+    // Localização do aparelho; se indisponível, usa as coordenadas cadastradas da escola.
+    let posicao: Localizacao | null = local;
+    if (!posicao) {
+      try {
+        posicao = await capturarLocalizacao();
+        setLocal(posicao);
+      } catch {
+        posicao = null;
+      }
+    }
+    if (!posicao && escola?.latitude != null && escola?.longitude != null) {
+      posicao = {
+        latitude: escola.latitude,
+        longitude: escola.longitude,
+        precisao_metros: null,
+        capturada_em: new Date().toISOString(),
+        origem: "escola",
+      };
+    }
+    // Guarda a primeira leitura de GPS como localização fixa da escola (fallback futuro).
+    if (
+      posicao?.origem === "dispositivo" &&
+      (escola?.latitude == null || escola?.longitude == null)
+    ) {
+      void supabase
+        .from("escolas")
+        .update({ latitude: posicao.latitude, longitude: posicao.longitude })
+        .eq("id", escolaId);
+    }
+
 
     const partes = [
       `Serviço: ${servico.nome}`,
@@ -203,14 +234,17 @@ function NovoAlerta() {
         tipo: prioridade === "vermelho" ? "invasao" : servico.tipoPadrao,
         prioridade,
         descricao: partes.join("\n").slice(0, 1000),
-        latitude: local?.latitude ?? null,
-        longitude: local?.longitude ?? null,
-        precisao_metros: local?.precisao_metros ?? null,
+        latitude: posicao?.latitude ?? null,
+        longitude: posicao?.longitude ?? null,
+        precisao_metros: posicao?.precisao_metros ?? null,
+        localizacao_capturada_em: posicao?.capturada_em ?? null,
+        localizacao_origem: posicao?.origem ?? "indisponivel",
         endereco_aproximado: escola?.endereco ?? null,
         orgaos_destino: [servico.orgao],
       })
       .select("id")
       .single();
+
 
     setEnviando(false);
     setConfirmarVermelho(false);

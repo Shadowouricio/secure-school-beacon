@@ -1,15 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Clock, ExternalLink, MapPin, Phone, School } from "lucide-react";
+import { Clock, ExternalLink, MapPin, Navigation, Phone, School } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { AutoridadeShell } from "@/components/AutoridadeShell";
 import { Button } from "@/components/ui/button";
 import { useRealtimeAlertas } from "@/hooks/use-realtime-alertas";
-import { corStatus, formatarDataHora, labelStatus, labelTipo } from "@/lib/alertas";
-import { ACOES, labelAcao } from "@/lib/autoridades";
+import {
+  abrirNavegacao,
+  corStatus,
+  formatarDataHora,
+  labelPrioridade,
+  labelStatus,
+  labelTipo,
+} from "@/lib/alertas";
+import { ACOES, ACOES_STATUS, labelAcao, labelOrgao } from "@/lib/autoridades";
+
 
 export const Route = createFileRoute("/_authenticated/ocorrencia/$id")({
   head: () => ({
@@ -127,11 +135,19 @@ function Ocorrencia() {
   return (
     <AutoridadeShell subtitulo="Ocorrência">
       <div className="rounded-2xl border border-emergency/50 bg-surface p-4">
-        <span
-          className={`inline-block rounded-full border px-2.5 py-0.5 text-xs ${corStatus(alerta.status)}`}
-        >
-          {labelStatus(alerta.status)}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className={`inline-block rounded-full border px-2.5 py-0.5 text-xs ${corStatus(alerta.status)}`}
+          >
+            {labelStatus(alerta.status)}
+          </span>
+          <span className="inline-block rounded-full border border-warning/50 bg-warning/10 px-2.5 py-0.5 text-xs text-warning">
+            Urgência: {labelPrioridade(alerta.prioridade)}
+          </span>
+          <span className="inline-block rounded-full border border-info/50 bg-info/10 px-2.5 py-0.5 text-xs text-info">
+            {(alerta.orgaos_destino ?? []).map(labelOrgao).join(" · ") || "Órgão não definido"}
+          </span>
+        </div>
         <h1 className="mt-2 font-display text-2xl font-extrabold uppercase tracking-wide text-emergency">
           {labelTipo(alerta.tipo)}
         </h1>
@@ -163,6 +179,18 @@ function Ocorrencia() {
             {escola.responsavel ? ` · ${escola.responsavel}` : ""}
           </a>
         ) : null}
+
+        <Button
+          size="lg"
+          className="mt-4 w-full"
+          disabled={!temCoords}
+          onClick={() =>
+            abrirNavegacao(alerta.latitude!, alerta.longitude!, escola?.nome ?? "Ocorrência")
+          }
+        >
+          <Navigation className="size-5" />
+          {temCoords ? "Ir para o local" : "Localização indisponível"}
+        </Button>
       </section>
 
       <section className="mt-4 rounded-2xl border border-border bg-surface p-4">
@@ -185,14 +213,15 @@ function Ocorrencia() {
               <span>
                 {alerta.latitude!.toFixed(5)}, {alerta.longitude!.toFixed(5)}
                 {alerta.precisao_metros ? ` · ±${Math.round(alerta.precisao_metros)} m` : ""}
+                {alerta.localizacao_origem === "escola" ? " · endereço da escola" : ""}
               </span>
               <a
                 className="flex items-center gap-1 text-info underline-offset-4 hover:underline"
                 target="_blank"
                 rel="noreferrer"
-                href={`https://www.google.com/maps/dir/?api=1&destination=${alerta.latitude},${alerta.longitude}`}
+                href={`https://www.google.com/maps/dir/?api=1&destination=${alerta.latitude},${alerta.longitude}&travelmode=driving`}
               >
-                Traçar rota <ExternalLink className="size-3" />
+                Abrir no Google Maps <ExternalLink className="size-3" />
               </a>
             </div>
           </>
@@ -203,10 +232,13 @@ function Ocorrencia() {
 
       <section className="mt-6">
         <h2 className="font-display text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-          Ações de atendimento
+          Status do Atendimento
         </h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Atual: <span className="font-medium text-foreground">{labelStatus(alerta.status)}</span>
+        </p>
         <div className="mt-3 grid gap-2">
-          {ACOES.map((a) => (
+          {ACOES_STATUS.map((a) => (
             <Button
               key={a.acao}
               size="lg"
@@ -214,11 +246,12 @@ function Ocorrencia() {
               disabled={salvando !== null || alerta.status === "encerrado"}
               onClick={() => registrar(a)}
             >
-              {a.label}
+              Atualizar status: {a.label}
             </Button>
           ))}
         </div>
       </section>
+
 
       <section className="mt-6">
         <h2 className="font-display text-sm font-semibold uppercase tracking-widest text-muted-foreground">

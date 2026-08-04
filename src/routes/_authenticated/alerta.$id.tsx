@@ -7,7 +7,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { useRealtimeAlertas } from "@/hooks/use-realtime-alertas";
-import { STATUS_ALERTA, corStatus, formatarDataHora, labelStatus, labelTipo } from "@/lib/alertas";
+import {
+  ETAPAS_ATENDIMENTO,
+  corStatus,
+  etapaAtual,
+  formatarDataHora,
+  labelStatus,
+  labelTipo,
+} from "@/lib/alertas";
+
 
 export const Route = createFileRoute("/_authenticated/alerta/$id")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -81,7 +89,7 @@ function DetalheAlerta() {
     );
   }
 
-  const indiceAtual = STATUS_ALERTA.findIndex((s) => s.value === alerta.status);
+  const indiceAtual = etapaAtual(alerta.status);
 
   return (
     <AppShell titulo="Ocorrência">
@@ -122,13 +130,14 @@ function DetalheAlerta() {
 
       <section className="mt-6">
         <h2 className="font-display text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-          Status do atendimento
+          Status do Atendimento
         </h2>
         <ol className="mt-3 space-y-3">
-          {STATUS_ALERTA.map((s, i) => {
+          {ETAPAS_ATENDIMENTO.map((s, i) => {
             const concluido = i <= indiceAtual;
             return (
-              <li key={s.value} className="flex items-center gap-3">
+              <li key={s.label} className="flex items-center gap-3">
+
                 <span
                   className={`flex size-7 items-center justify-center rounded-full border text-xs ${
                     concluido
