@@ -205,6 +205,17 @@ function NovoAlerta() {
         origem: "escola",
       };
     }
+    // Guarda a primeira leitura de GPS como localização fixa da escola (fallback futuro).
+    if (
+      posicao?.origem === "dispositivo" &&
+      (escola?.latitude == null || escola?.longitude == null)
+    ) {
+      void supabase
+        .from("escolas")
+        .update({ latitude: posicao.latitude, longitude: posicao.longitude })
+        .eq("id", escolaId);
+    }
+
 
     const partes = [
       `Serviço: ${servico.nome}`,
