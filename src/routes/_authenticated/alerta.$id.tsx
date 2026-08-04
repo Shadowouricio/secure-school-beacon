@@ -130,13 +130,14 @@ function DetalheAlerta() {
 
       <section className="mt-6">
         <h2 className="font-display text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-          Status do atendimento
+          Status do Atendimento
         </h2>
         <ol className="mt-3 space-y-3">
-          {STATUS_ALERTA.map((s, i) => {
+          {ETAPAS_ATENDIMENTO.map((s, i) => {
             const concluido = i <= indiceAtual;
             return (
-              <li key={s.value} className="flex items-center gap-3">
+              <li key={s.label} className="flex items-center gap-3">
+
                 <span
                   className={`flex size-7 items-center justify-center rounded-full border text-xs ${
                     concluido
