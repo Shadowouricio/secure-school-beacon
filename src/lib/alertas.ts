@@ -123,9 +123,13 @@ export function capturarLocalizacao(): Promise<Localizacao> {
           latitude: pos.coords.latitude,
           longitude: pos.coords.longitude,
           precisao_metros: pos.coords.accuracy ?? null,
+          capturada_em: new Date(pos.timestamp || Date.now()).toISOString(),
+          origem: "dispositivo",
         }),
       (err) => reject(new Error(err.message || "Não foi possível obter a localização.")),
-      { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
     );
+  });
+
   });
 }
