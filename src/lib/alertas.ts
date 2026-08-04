@@ -130,6 +130,5 @@ export function capturarLocalizacao(): Promise<Localizacao> {
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
     );
   });
-
-  });
 }
+
