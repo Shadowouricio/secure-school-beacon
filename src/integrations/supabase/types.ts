@@ -22,6 +22,8 @@ export type Database = {
           escola_id: string
           id: string
           latitude: number | null
+          localizacao_capturada_em: string | null
+          localizacao_origem: string
           longitude: number | null
           orgaos_destino: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros: number | null
@@ -37,6 +39,8 @@ export type Database = {
           escola_id: string
           id?: string
           latitude?: number | null
+          localizacao_capturada_em?: string | null
+          localizacao_origem?: string
           longitude?: number | null
           orgaos_destino?: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros?: number | null
@@ -52,6 +56,8 @@ export type Database = {
           escola_id?: string
           id?: string
           latitude?: number | null
+          localizacao_capturada_em?: string | null
+          localizacao_origem?: string
           longitude?: number | null
           orgaos_destino?: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros?: number | null
@@ -186,6 +192,8 @@ export type Database = {
           endereco: string | null
           estado: string | null
           id: string
+          latitude: number | null
+          longitude: number | null
           nome: string
           responsavel: string | null
           telefone: string | null
@@ -198,6 +206,8 @@ export type Database = {
           endereco?: string | null
           estado?: string | null
           id: string
+          latitude?: number | null
+          longitude?: number | null
           nome: string
           responsavel?: string | null
           telefone?: string | null
@@ -210,6 +220,8 @@ export type Database = {
           endereco?: string | null
           estado?: string | null
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           nome?: string
           responsavel?: string | null
           telefone?: string | null
