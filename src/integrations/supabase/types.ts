@@ -17,6 +17,7 @@ export type Database = {
       alertas: {
         Row: {
           aluno_nome: string | null
+          categoria: string | null
           created_at: string
           created_by: string | null
           data_ocorrencia: string | null
@@ -43,6 +44,7 @@ export type Database = {
         }
         Insert: {
           aluno_nome?: string | null
+          categoria?: string | null
           created_at?: string
           created_by?: string | null
           data_ocorrencia?: string | null
@@ -69,6 +71,7 @@ export type Database = {
         }
         Update: {
           aluno_nome?: string | null
+          categoria?: string | null
           created_at?: string
           created_by?: string | null
           data_ocorrencia?: string | null
