@@ -269,7 +269,7 @@ export type Database = {
         | "equipe_em_deslocamento"
         | "chegada_ao_local"
         | "ocorrencia_finalizada"
-      app_role: "escola" | "autoridade"
+      app_role: "escola" | "autoridade" | "professor" | "diretor"
       orgao_tipo: "policia" | "samu" | "bombeiros" | "conselho_tutelar"
       prioridade_alerta: "baixa" | "media" | "alta" | "vermelho"
       status_alerta:
@@ -417,7 +417,7 @@ export const Constants = {
         "chegada_ao_local",
         "ocorrencia_finalizada",
       ],
-      app_role: ["escola", "autoridade"],
+      app_role: ["escola", "autoridade", "professor", "diretor"],
       orgao_tipo: ["policia", "samu", "bombeiros", "conselho_tutelar"],
       prioridade_alerta: ["baixa", "media", "alta", "vermelho"],
       status_alerta: [
