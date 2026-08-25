@@ -16,54 +16,84 @@ export type Database = {
     Tables: {
       alertas: {
         Row: {
+          aluno_nome: string | null
+          categoria: string | null
           created_at: string
-          descricao: string
+          created_by: string | null
+          data_ocorrencia: string | null
+          descricao: string | null
+          detalhes: string | null
           endereco_aproximado: string | null
           escola_id: string
+          hora_ocorrencia: string | null
           id: string
           latitude: number | null
+          local_ocorrencia: string | null
           localizacao_capturada_em: string | null
           localizacao_origem: string
           longitude: number | null
           orgaos_destino: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros: number | null
           prioridade: Database["public"]["Enums"]["prioridade_alerta"]
+          registro_tipo: string
+          responsavel_registro: string | null
           status: Database["public"]["Enums"]["status_alerta"]
           tipo: Database["public"]["Enums"]["tipo_ocorrencia"]
+          turma: string | null
           updated_at: string
         }
         Insert: {
+          aluno_nome?: string | null
+          categoria?: string | null
           created_at?: string
-          descricao: string
+          created_by?: string | null
+          data_ocorrencia?: string | null
+          descricao?: string | null
+          detalhes?: string | null
           endereco_aproximado?: string | null
           escola_id: string
+          hora_ocorrencia?: string | null
           id?: string
           latitude?: number | null
+          local_ocorrencia?: string | null
           localizacao_capturada_em?: string | null
           localizacao_origem?: string
           longitude?: number | null
           orgaos_destino?: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros?: number | null
           prioridade?: Database["public"]["Enums"]["prioridade_alerta"]
+          registro_tipo?: string
+          responsavel_registro?: string | null
           status?: Database["public"]["Enums"]["status_alerta"]
-          tipo: Database["public"]["Enums"]["tipo_ocorrencia"]
+          tipo?: Database["public"]["Enums"]["tipo_ocorrencia"]
+          turma?: string | null
           updated_at?: string
         }
         Update: {
+          aluno_nome?: string | null
+          categoria?: string | null
           created_at?: string
-          descricao?: string
+          created_by?: string | null
+          data_ocorrencia?: string | null
+          descricao?: string | null
+          detalhes?: string | null
           endereco_aproximado?: string | null
           escola_id?: string
+          hora_ocorrencia?: string | null
           id?: string
           latitude?: number | null
+          local_ocorrencia?: string | null
           localizacao_capturada_em?: string | null
           localizacao_origem?: string
           longitude?: number | null
           orgaos_destino?: Database["public"]["Enums"]["orgao_tipo"][]
           precisao_metros?: number | null
           prioridade?: Database["public"]["Enums"]["prioridade_alerta"]
+          registro_tipo?: string
+          responsavel_registro?: string | null
           status?: Database["public"]["Enums"]["status_alerta"]
           tipo?: Database["public"]["Enums"]["tipo_ocorrencia"]
+          turma?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -229,6 +259,76 @@ export type Database = {
         }
         Relationships: []
       }
+      membros_escola: {
+        Row: {
+          cargo: string
+          created_at: string
+          escola_id: string
+          id: string
+          nome: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cargo?: string
+          created_at?: string
+          escola_id: string
+          id?: string
+          nome: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cargo?: string
+          created_at?: string
+          escola_id?: string
+          id?: string
+          nome?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membros_escola_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ocorrencia_fotos: {
+        Row: {
+          alerta_id: string
+          created_at: string
+          created_by: string
+          id: string
+          storage_path: string
+        }
+        Insert: {
+          alerta_id: string
+          created_at?: string
+          created_by: string
+          id?: string
+          storage_path: string
+        }
+        Update: {
+          alerta_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ocorrencia_fotos_alerta_id_fkey"
+            columns: ["alerta_id"]
+            isOneToOne: false
+            referencedRelation: "alertas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -262,6 +362,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      listar_escolas: {
+        Args: never
+        Returns: {
+          cidade: string
+          id: string
+          nome: string
+        }[]
+      }
+      minha_escola: { Args: never; Returns: string }
+      sou_diretor: { Args: never; Returns: boolean }
     }
     Enums: {
       acao_atendimento:
@@ -269,7 +379,7 @@ export type Database = {
         | "equipe_em_deslocamento"
         | "chegada_ao_local"
         | "ocorrencia_finalizada"
-      app_role: "escola" | "autoridade"
+      app_role: "escola" | "autoridade" | "professor" | "diretor"
       orgao_tipo: "policia" | "samu" | "bombeiros" | "conselho_tutelar"
       prioridade_alerta: "baixa" | "media" | "alta" | "vermelho"
       status_alerta:
@@ -417,7 +527,7 @@ export const Constants = {
         "chegada_ao_local",
         "ocorrencia_finalizada",
       ],
-      app_role: ["escola", "autoridade"],
+      app_role: ["escola", "autoridade", "professor", "diretor"],
       orgao_tipo: ["policia", "samu", "bombeiros", "conselho_tutelar"],
       prioridade_alerta: ["baixa", "media", "alta", "vermelho"],
       status_alerta: [
