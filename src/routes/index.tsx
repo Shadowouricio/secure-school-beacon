@@ -50,6 +50,7 @@ function Inicio() {
       const { data, error } = await supabase
         .from("alertas")
         .select("*")
+        .neq("registro_tipo", "ocorrencia")
         .order("created_at", { ascending: false })
         .limit(3);
       if (error) throw error;

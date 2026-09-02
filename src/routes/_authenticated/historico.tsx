@@ -33,6 +33,7 @@ function Historico() {
       const { data, error } = await supabase
         .from("alertas")
         .select("*")
+        .neq("registro_tipo", "ocorrencia")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
