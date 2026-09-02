@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ChevronRight, MapPin, Siren } from "lucide-react";
+import { BellRing, ChevronRight, MapPin, Siren, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { AutoridadeShell } from "@/components/AutoridadeShell";
 import { corStatus, formatarDataHora, labelStatus, labelTipo } from "@/lib/alertas";
-import { labelOrgao, tocarAlerta } from "@/lib/autoridades";
+import { labelOrgao } from "@/lib/autoridades";
+import { useAlarmeEmergencia } from "@/hooks/use-alarme-emergencia";
 
 export const Route = createFileRoute("/_authenticated/central")({
   head: () => ({
@@ -59,6 +60,7 @@ function Central() {
       const { data, error } = await supabase
         .from("alertas")
         .select("*, escolas(nome, endereco, cidade, estado, telefone)")
+        .eq("registro_tipo", "emergencia")
         .neq("status", "encerrado")
         .neq("escola_id", meuId!)
         .overlaps("orgaos_destino", [orgao!])
@@ -82,12 +84,14 @@ function Central() {
             id: string;
             tipo: string;
             escola_id: string;
+            registro_tipo: string | null;
             orgaos_destino: string[] | null;
           };
           // Só notifica agentes do órgão destinatário e nunca o próprio remetente.
           if (novo.escola_id === meuId) return;
           if (!novo.orgaos_destino?.includes(orgao)) return;
-          tocarAlerta();
+          // Ocorrências escolares comuns não acionam alarme.
+          if ((novo.registro_tipo ?? "emergencia") !== "emergencia") return;
           toast.error("🚨 NOVO ALERTA DE EMERGÊNCIA", {
             description: labelTipo(novo.tipo),
             duration: 15000,
@@ -115,6 +119,10 @@ function Central() {
   }, [queryClient, orgao, meuId]);
 
 
+  // Alarme repete a cada 15s enquanto houver alerta sem recebimento confirmado.
+  const pendentes = (alertas ?? []).filter((a) => a.status === "aguardando_resposta").length;
+  const { liberado, bloqueado, ativar } = useAlarmeEmergencia(pendentes);
+
   return (
     <AutoridadeShell subtitulo={autoridade ? labelOrgao(autoridade.orgao) : "Autoridades"}>
       <section className="rounded-2xl border border-border bg-surface p-4">
@@ -125,6 +133,25 @@ function Central() {
           {autoridade?.unidade ? ` · ${autoridade.unidade}` : ""}
         </p>
       </section>
+
+      <button
+        type="button"
+        onClick={() => void ativar()}
+        className={`mt-3 flex w-full items-center gap-3 rounded-2xl border p-3 text-left text-sm transition-colors ${
+          liberado
+            ? "border-success/40 bg-success/10 text-success"
+            : "border-warning/40 bg-warning/10 text-warning"
+        }`}
+      >
+        {liberado ? <BellRing className="size-5 shrink-0" /> : <VolumeX className="size-5 shrink-0" />}
+        <span>
+          {liberado
+            ? "Alarme sonoro ativado. Repete a cada 15s até confirmar o recebimento."
+            : bloqueado
+              ? "O navegador bloqueou o som. Toque aqui para permitir notificações sonoras."
+              : "Toque para permitir o alarme sonoro de novos alertas."}
+        </span>
+      </button>
 
       <div className="mt-6 mb-3 flex items-center justify-between">
         <h2 className="font-display text-sm font-semibold uppercase tracking-widest text-muted-foreground">
