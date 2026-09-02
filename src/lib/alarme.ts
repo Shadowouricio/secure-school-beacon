@@ -46,9 +46,9 @@ export function audioLiberado(): boolean {
 export function tocarSirene(): boolean {
   const c = obterContexto();
   if (!c) return false;
-  if (c.state !== "running") {
+  if ((c.state as string) !== "running") {
     void c.resume().catch(() => undefined);
-    if (c.state !== "running") return false;
+    if ((c.state as string) !== "running") return false;
   }
   try {
     const agora = c.currentTime;
