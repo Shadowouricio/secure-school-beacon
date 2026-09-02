@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ShieldAlert, History, LogOut, Home } from "lucide-react";
+import { ShieldAlert, History, LogOut, Home, FileText } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -53,7 +53,16 @@ export function AppShell({ children, titulo }: { children: ReactNode; titulo?: s
           className="flex flex-1 flex-col items-center gap-1 py-3 text-xs"
         >
           <History className="size-5" />
-          Histórico
+          Alertas
+        </Link>
+        <Link
+          to="/registros"
+          activeProps={{ className: "text-foreground" }}
+          inactiveProps={{ className: "text-muted-foreground" }}
+          className="flex flex-1 flex-col items-center gap-1 py-3 text-xs"
+        >
+          <FileText className="size-5" />
+          Ocorrências
         </Link>
       </nav>
     </div>
