@@ -146,18 +146,47 @@ export async function gerarPdfOcorrencia(
   if (registro.detalhes) linha("Detalhes", registro.detalhes);
   linha("Responsável pelo registro", registro.responsavel_registro ?? "—");
 
+  // Bloco de assinaturas (adequado para impressão)
+  if (y > alturaPagina - 170) {
+    doc.addPage();
+    y = margem;
+  }
+  y += 24;
+  const larguraAssinatura = (larguraPagina - margem * 2 - 32) / 2;
+  const assinaturas = [
+    registro.responsavel_registro?.trim() || "Responsável pelo registro",
+    "Direção da escola",
+  ];
+  assinaturas.forEach((legenda, i) => {
+    const x = margem + i * (larguraAssinatura + 32);
+    doc.setDrawColor(60, 60, 60);
+    doc.line(x, y + 44, x + larguraAssinatura, y + 44);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(90, 90, 90);
+    doc.text(legenda, x + larguraAssinatura / 2, y + 58, { align: "center" });
+  });
+  doc.setTextColor(20, 20, 20);
+
   // Fotos anexadas
-  for (const url of fotosUrls) {
+  const dataFmt = formatarData(registro.data_ocorrencia);
+  for (const [indice, url] of fotosUrls.entries()) {
     const dataUrl = await urlParaDataUrl(url);
     if (!dataUrl) continue;
+    const formato = dataUrl.startsWith("data:image/png") ? "PNG" : "JPEG";
     doc.addPage();
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
-    doc.text("ANEXO FOTOGRÁFICO", margem, margem);
+    doc.text(`ANEXO FOTOGRÁFICO ${indice + 1}`, margem, margem);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(110, 110, 110);
+    doc.text(`Ocorrência de ${dataFmt}`, margem, margem + 13);
+    doc.setTextColor(20, 20, 20);
     try {
-      doc.addImage(dataUrl, "JPEG", margem, margem + 16, larguraPagina - margem * 2, 0);
+      doc.addImage(dataUrl, formato, margem, margem + 24, larguraPagina - margem * 2, 0);
     } catch {
-      /* imagem inválida */
+      doc.text("Não foi possível renderizar esta imagem.", margem, margem + 40);
     }
   }
 
