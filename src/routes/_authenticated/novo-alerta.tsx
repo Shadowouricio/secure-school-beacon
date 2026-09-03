@@ -27,6 +27,7 @@ import {
   type TipoOcorrencia,
 } from "@/lib/alertas";
 import type { Orgao } from "@/lib/autoridades";
+import { contatoOffline, linkTelefone } from "@/lib/offline";
 
 export const Route = createFileRoute("/_authenticated/novo-alerta")({
   head: () => ({
@@ -170,6 +171,19 @@ function NovoAlerta() {
 
   async function enviar(prioridade: Prioridade) {
     if (!servico) return;
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      const contato = contatoOffline(servico.orgao);
+      if (!contato) {
+        toast.error("Número offline não configurado para este serviço");
+        return;
+      }
+      toast.info("Modo offline: abrindo ligação direta", {
+        description: `${contato.label} · ${contato.telefone}`,
+      });
+      window.location.href = linkTelefone(contato.telefone);
+      setConfirmarVermelho(false);
+      return;
+    }
     setEnviando(true);
 
     const { data: userData } = await supabase.auth.getUser();
@@ -182,38 +196,20 @@ function NovoAlerta() {
 
     const { data: escola } = await supabase
       .from("escolas")
-      .select("nome, responsavel, endereco, cidade, estado, latitude, longitude")
+      .select("nome, responsavel, endereco, cidade, estado")
       .eq("id", escolaId)
       .maybeSingle();
 
-    // Localização do aparelho; se indisponível, usa as coordenadas cadastradas da escola.
-    let posicao: Localizacao | null = local;
-    if (!posicao) {
-      try {
-        posicao = await capturarLocalizacao();
-        setLocal(posicao);
-      } catch {
-        posicao = null;
-      }
-    }
-    if (!posicao && escola?.latitude != null && escola?.longitude != null) {
-      posicao = {
-        latitude: escola.latitude,
-        longitude: escola.longitude,
-        precisao_metros: null,
-        capturada_em: new Date().toISOString(),
-        origem: "escola",
-      };
-    }
-    // Guarda a primeira leitura de GPS como localização fixa da escola (fallback futuro).
-    if (
-      posicao?.origem === "dispositivo" &&
-      (escola?.latitude == null || escola?.longitude == null)
-    ) {
-      void supabase
-        .from("escolas")
-        .update({ latitude: posicao.latitude, longitude: posicao.longitude })
-        .eq("id", escolaId);
+    // Captura imediatamente antes do envio para que o alerta represente o dispositivo remetente.
+    let posicao: Localizacao | null = null;
+    try {
+      posicao = await capturarLocalizacao();
+      setLocal(posicao);
+      setErroLocal(null);
+    } catch (e) {
+      // O alerta ainda pode ser enviado, mas nunca recebe coordenadas fixas ou de outra origem.
+      setLocal(null);
+      setErroLocal(e instanceof Error ? e.message : "Localização indisponível.");
     }
 
 
@@ -231,6 +227,7 @@ function NovoAlerta() {
       .from("alertas")
       .insert({
         escola_id: escolaId,
+        registro_tipo: "emergencia",
         tipo: prioridade === "vermelho" ? "invasao" : servico.tipoPadrao,
         prioridade,
         descricao: partes.join("\n").slice(0, 1000),
@@ -325,6 +322,15 @@ function NovoAlerta() {
             </DrawerTitle>
           </DrawerHeader>
           <div className="grid gap-3 px-4 pb-8">
+            {servico && contatoOffline(servico.orgao) ? (
+              <a
+                href={linkTelefone(contatoOffline(servico.orgao)!.telefone)}
+                className="flex items-center justify-center gap-2 rounded-xl border border-warning/50 bg-warning/15 px-4 py-3 text-sm font-semibold text-warning"
+              >
+                <Siren className="size-4" />
+                Ligar diretamente ({contatoOffline(servico.orgao)!.telefone})
+              </a>
+            ) : null}
             {PRIORIDADES.map((p, i) => (
               <button
                 key={p.value}

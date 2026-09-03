@@ -78,6 +78,12 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
 
 Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
+### Modo offline
+
+Quando o dispositivo fica sem internet, o aplicativo informa o modo offline e oferece ligações diretas para Polícia, SAMU, Bombeiros e Conselho Tutelar. O envio online continua sendo usado normalmente quando a conexão está disponível.
+
+Os números podem ser configurados pelas variáveis `VITE_OFFLINE_PHONE_POLICIA`, `VITE_OFFLINE_PHONE_SAMU`, `VITE_OFFLINE_PHONE_BOMBEIROS` e `VITE_OFFLINE_PHONE_CONSELHO_TUTELAR`. Na ausência delas, são usados os números nacionais `190`, `192`, `193` e `100`, respectivamente.
+
 ```sh
 git clone <this-repository-url>
 cd <repository-name>

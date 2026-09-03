@@ -50,7 +50,7 @@ function Inicio() {
       const { data, error } = await supabase
         .from("alertas")
         .select("*")
-        .neq("registro_tipo", "ocorrencia")
+        .eq("registro_tipo", "emergencia")
         .order("created_at", { ascending: false })
         .limit(3);
       if (error) throw error;

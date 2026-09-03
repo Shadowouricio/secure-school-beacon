@@ -33,7 +33,7 @@ function Historico() {
       const { data, error } = await supabase
         .from("alertas")
         .select("*")
-        .neq("registro_tipo", "ocorrencia")
+        .eq("registro_tipo", "emergencia")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
@@ -46,7 +46,7 @@ function Historico() {
 
   return (
     <AppShell titulo="Histórico">
-      <h1 className="font-display text-xl font-bold">Ocorrências enviadas</h1>
+      <h1 className="font-display text-xl font-bold">Alertas de emergência enviados</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         Registro completo dos alertas emitidos pela instituição.
       </p>

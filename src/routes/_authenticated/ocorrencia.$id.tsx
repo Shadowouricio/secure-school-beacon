@@ -11,6 +11,7 @@ import { useRealtimeAlertas } from "@/hooks/use-realtime-alertas";
 import {
   abrirNavegacao,
   corStatus,
+  coordenadasValidas,
   formatarDataHora,
   labelPrioridade,
   labelStatus,
@@ -52,6 +53,7 @@ function Ocorrencia() {
         .from("alertas")
         .select("*, escolas(nome, endereco, cidade, estado, telefone, responsavel)")
         .eq("id", id)
+        .eq("registro_tipo", "emergencia")
         .maybeSingle();
       if (error) throw error;
       return data;
@@ -127,7 +129,7 @@ function Ocorrencia() {
     responsavel: string | null;
   } | null;
 
-  const temCoords = alerta.latitude != null && alerta.longitude != null;
+  const temCoords = coordenadasValidas(alerta.latitude, alerta.longitude);
   const bbox = temCoords
     ? `${alerta.longitude! - 0.004},${alerta.latitude! - 0.003},${alerta.longitude! + 0.004},${alerta.latitude! + 0.003}`
     : "";

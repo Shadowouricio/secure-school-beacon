@@ -25,12 +25,12 @@ export const DESTINOS_SUGERIDOS: Record<string, Orgao[]> = {
 export const ACOES = [
   {
     acao: "recebimento_confirmado",
-    label: "Recebido",
+    label: "Recebimento confirmado",
     status: "recebimento_confirmado",
   },
   {
     acao: "equipe_em_deslocamento",
-    label: "Equipe em deslocamento",
+    label: "Equipe acionada",
     status: "equipe_acionada",
   },
   {
@@ -40,13 +40,13 @@ export const ACOES = [
   },
   {
     acao: "ocorrencia_finalizada",
-    label: "Finalizado",
+    label: "Atendimento concluído",
     status: "encerrado",
   },
 ] as const;
 
 /** Ações exibidas como botões de mudança de status (3 etapas após o envio). */
-export const ACOES_STATUS = ACOES.filter((a) => a.acao !== "equipe_em_deslocamento");
+export const ACOES_STATUS = ACOES;
 
 
 export type Acao = (typeof ACOES)[number]["acao"];

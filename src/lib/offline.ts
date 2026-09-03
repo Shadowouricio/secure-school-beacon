@@ -1,36 +1,39 @@
 import type { Orgao } from "@/lib/autoridades";
 
-/** Números oficiais de emergência usados quando o aparelho está sem internet. */
-export const TELEFONES_PADRAO: Record<Orgao, string> = {
-  policia: "190",
-  samu: "192",
-  bombeiros: "193",
-  conselho_tutelar: "100",
+export type OfflineContato = {
+  orgao: Orgao;
+  label: string;
+  telefone: string;
 };
 
-const CHAVE = "rse.telefones-emergencia";
+const configurarTelefone = (nome: string, padrao: string) => {
+  const valor: unknown = import.meta.env[nome];
+  return typeof valor === "string" && valor.trim() ? valor.trim() : padrao;
+};
 
-/** Números configurados pela escola (com fallback nos números oficiais). */
-export function telefonesEmergencia(): Record<Orgao, string> {
-  if (typeof window === "undefined") return { ...TELEFONES_PADRAO };
-  try {
-    const bruto = window.localStorage.getItem(CHAVE);
-    if (!bruto) return { ...TELEFONES_PADRAO };
-    const salvo = JSON.parse(bruto) as Partial<Record<Orgao, string>>;
-    return { ...TELEFONES_PADRAO, ...salvo };
-  } catch {
-    return { ...TELEFONES_PADRAO };
-  }
+export const CONTATOS_OFFLINE: OfflineContato[] = [
+  {
+    orgao: "policia",
+    label: "Polícia",
+    telefone: configurarTelefone("VITE_OFFLINE_PHONE_POLICIA", "190"),
+  },
+  { orgao: "samu", label: "SAMU", telefone: configurarTelefone("VITE_OFFLINE_PHONE_SAMU", "192") },
+  {
+    orgao: "bombeiros",
+    label: "Bombeiros",
+    telefone: configurarTelefone("VITE_OFFLINE_PHONE_BOMBEIROS", "193"),
+  },
+  {
+    orgao: "conselho_tutelar",
+    label: "Conselho Tutelar",
+    telefone: configurarTelefone("VITE_OFFLINE_PHONE_CONSELHO_TUTELAR", "100"),
+  },
+];
+
+export function contatoOffline(orgao: Orgao) {
+  return CONTATOS_OFFLINE.find((contato) => contato.orgao === orgao) ?? null;
 }
 
-export function salvarTelefonesEmergencia(valores: Partial<Record<Orgao, string>>) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(CHAVE, JSON.stringify(valores));
-}
-
-/** Abre o discador do aparelho com o número da autoridade correspondente. */
-export function ligarPara(orgao: Orgao) {
-  if (typeof window === "undefined") return;
-  const numero = telefonesEmergencia()[orgao] ?? TELEFONES_PADRAO[orgao];
-  window.location.href = `tel:${numero.replace(/[^\d+]/g, "")}`;
+export function linkTelefone(telefone: string) {
+  return `tel:${telefone.replace(/[^\d+]/g, "")}`;
 }

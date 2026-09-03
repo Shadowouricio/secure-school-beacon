@@ -9,21 +9,22 @@ export const TIPOS_OCORRENCIA = [
 export type TipoOcorrencia = (typeof TIPOS_OCORRENCIA)[number]["value"];
 
 export const STATUS_ALERTA = [
-  { value: "aguardando_resposta", label: "Aguardando atendimento" },
-  { value: "recebimento_confirmado", label: "Recebido" },
-  { value: "equipe_acionada", label: "Em atendimento" },
+  { value: "aguardando_resposta", label: "Aguardando recebimento" },
+  { value: "recebimento_confirmado", label: "Recebimento confirmado" },
+  { value: "equipe_acionada", label: "Equipe acionada" },
   { value: "atendimento_iniciado", label: "Em atendimento" },
-  { value: "encerrado", label: "Finalizado" },
+  { value: "encerrado", label: "Atendimento concluído" },
 ] as const;
 
 export type StatusAlerta = (typeof STATUS_ALERTA)[number]["value"];
 
 /** Etapas exibidas na linha do tempo (status agrupados em 4 fases). */
 export const ETAPAS_ATENDIMENTO = [
-  { label: "Aguardando atendimento", status: ["aguardando_resposta"] },
-  { label: "Recebido", status: ["recebimento_confirmado"] },
-  { label: "Em atendimento", status: ["equipe_acionada", "atendimento_iniciado"] },
-  { label: "Finalizado", status: ["encerrado"] },
+  { label: "Aguardando recebimento", status: ["aguardando_resposta"] },
+  { label: "Recebimento confirmado", status: ["recebimento_confirmado"] },
+  { label: "Equipe acionada", status: ["equipe_acionada"] },
+  { label: "Em atendimento", status: ["atendimento_iniciado"] },
+  { label: "Atendimento concluído", status: ["encerrado"] },
 ] as const;
 
 export function etapaAtual(status: string) {
@@ -75,6 +76,19 @@ export type Localizacao = {
   origem: "dispositivo" | "escola";
 };
 
+export function coordenadasValidas(latitude: number | null, longitude: number | null): latitude is number {
+  return (
+    latitude !== null &&
+    longitude !== null &&
+    Number.isFinite(latitude) &&
+    Number.isFinite(longitude) &&
+    latitude >= -90 &&
+    latitude <= 90 &&
+    longitude >= -180 &&
+    longitude <= 180
+  );
+}
+
 export const PRIORIDADES_LABEL: Record<string, string> = {
   baixa: "Baixa urgência",
   media: "Média urgência",
@@ -119,16 +133,20 @@ export function capturarLocalizacao(): Promise<Localizacao> {
     }
     navigator.geolocation.getCurrentPosition(
       (pos) =>
-        resolve({
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
-          precisao_metros: pos.coords.accuracy ?? null,
-          capturada_em: new Date(pos.timestamp || Date.now()).toISOString(),
-          origem: "dispositivo",
-        }),
+        coordenadasValidas(pos.coords.latitude, pos.coords.longitude)
+          ? resolve({
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude,
+              precisao_metros:
+                Number.isFinite(pos.coords.accuracy) && pos.coords.accuracy >= 0
+                  ? pos.coords.accuracy
+                  : null,
+              capturada_em: new Date(pos.timestamp || Date.now()).toISOString(),
+              origem: "dispositivo",
+            })
+          : reject(new Error("O dispositivo retornou uma localização inválida.")),
       (err) => reject(new Error(err.message || "Não foi possível obter a localização.")),
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
     );
   });
 }
-
