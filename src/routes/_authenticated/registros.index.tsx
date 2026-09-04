@@ -168,3 +168,4 @@ function RegistrosIndex() {
     </AppShell>
   );
 }
+
