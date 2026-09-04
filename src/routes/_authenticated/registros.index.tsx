@@ -70,7 +70,8 @@ function RegistrosIndex() {
         <div>
           <h1 className="font-display text-2xl font-bold">Registros de ocorrência</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Acompanhe os registros pedagógicos e disciplinares da escola.
+            Registro administrativo interno da escola — <strong>não</strong> aciona autoridades nem
+            gera alarme de emergência.
           </p>
         </div>
       </div>
@@ -168,3 +169,4 @@ function RegistrosIndex() {
     </AppShell>
   );
 }
+

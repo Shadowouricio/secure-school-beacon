@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { CONTATOS_OFFLINE, linkTelefone } from "@/lib/offline";
 
 export function OfflineStatus() {
-  const [offline, setOffline] = useState(() => typeof navigator !== "undefined" && !navigator.onLine);
+  // Começa como "online" para o HTML do servidor e do cliente coincidirem na hidratação.
+  const [offline, setOffline] = useState(false);
 
   useEffect(() => {
     const atualizar = () => setOffline(!navigator.onLine);

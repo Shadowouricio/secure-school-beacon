@@ -143,6 +143,10 @@ function NovaOcorrencia() {
       <p className="mt-1 text-sm text-muted-foreground">
         Somente a <strong>data da ocorrência</strong> é obrigatória. Os demais campos são opcionais.
       </p>
+      <p className="mt-2 rounded-xl border border-border bg-surface p-3 text-xs text-muted-foreground">
+        Ocorrência escolar é um registro administrativo: não envia notificação nem alarme às
+        autoridades. Para emergências, use “Enviar alerta de emergência”.
+      </p>
 
       <form onSubmit={salvar} className="mt-6 space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
