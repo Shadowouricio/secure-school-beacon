@@ -20,7 +20,7 @@ export function AutoridadeShell({
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-background md:max-w-2xl">
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-background sm:max-w-xl md:max-w-2xl lg:max-w-4xl">
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border bg-surface/95 px-4 py-3 backdrop-blur">
         <div className="flex items-center gap-2">
           <ShieldCheck className="size-5 text-info" />
@@ -43,7 +43,7 @@ export function AutoridadeShell({
 
       <main className="flex-1 px-4 pb-24 pt-4">{children}</main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-md items-stretch border-t border-border bg-surface/95 backdrop-blur md:max-w-2xl">
+      <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-md items-stretch border-t border-border bg-surface/95 backdrop-blur sm:max-w-xl md:max-w-2xl lg:max-w-4xl">
         <Link
           to="/central"
           activeProps={{ className: "text-foreground" }}
