@@ -18,6 +18,8 @@ import { Route as AuthenticatedHistoricoRouteImport } from './routes/_authentica
 import { Route as AuthenticatedNovoAlertaRouteImport } from './routes/_authenticated/novo-alerta'
 import { Route as AuthenticatedAlertaIdRouteImport } from './routes/_authenticated/alerta.$id'
 import { Route as AuthenticatedOcorrenciaIdRouteImport } from './routes/_authenticated/ocorrencia.$id'
+import { Route as AuthenticatedRegistrosIndexRouteImport } from './routes/_authenticated/registros.index'
+import { Route as AuthenticatedRegistrosIdRouteImport } from './routes/_authenticated/registros.$id'
 import { Route as AuthenticatedRegistrosNovoRouteImport } from './routes/_authenticated/registros.novo'
 
 const IndexRoute = IndexRouteImport.update({
@@ -66,6 +68,18 @@ const AuthenticatedOcorrenciaIdRoute =
     path: '/ocorrencia/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedRegistrosIndexRoute =
+  AuthenticatedRegistrosIndexRouteImport.update({
+    id: '/registros/',
+    path: '/registros/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedRegistrosIdRoute =
+  AuthenticatedRegistrosIdRouteImport.update({
+    id: '/registros/$id',
+    path: '/registros/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedRegistrosNovoRoute =
   AuthenticatedRegistrosNovoRouteImport.update({
     id: '/registros/novo',
@@ -82,7 +96,9 @@ export interface FileRoutesByFullPath {
   '/novo-alerta': typeof AuthenticatedNovoAlertaRoute
   '/alerta/$id': typeof AuthenticatedAlertaIdRoute
   '/ocorrencia/$id': typeof AuthenticatedOcorrenciaIdRoute
+  '/registros/$id': typeof AuthenticatedRegistrosIdRoute
   '/registros/novo': typeof AuthenticatedRegistrosNovoRoute
+  '/registros/': typeof AuthenticatedRegistrosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -93,7 +109,9 @@ export interface FileRoutesByTo {
   '/novo-alerta': typeof AuthenticatedNovoAlertaRoute
   '/alerta/$id': typeof AuthenticatedAlertaIdRoute
   '/ocorrencia/$id': typeof AuthenticatedOcorrenciaIdRoute
+  '/registros/$id': typeof AuthenticatedRegistrosIdRoute
   '/registros/novo': typeof AuthenticatedRegistrosNovoRoute
+  '/registros': typeof AuthenticatedRegistrosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -106,7 +124,9 @@ export interface FileRoutesById {
   '/_authenticated/novo-alerta': typeof AuthenticatedNovoAlertaRoute
   '/_authenticated/alerta/$id': typeof AuthenticatedAlertaIdRoute
   '/_authenticated/ocorrencia/$id': typeof AuthenticatedOcorrenciaIdRoute
+  '/_authenticated/registros/$id': typeof AuthenticatedRegistrosIdRoute
   '/_authenticated/registros/novo': typeof AuthenticatedRegistrosNovoRoute
+  '/_authenticated/registros/': typeof AuthenticatedRegistrosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -119,7 +139,9 @@ export interface FileRouteTypes {
     | '/novo-alerta'
     | '/alerta/$id'
     | '/ocorrencia/$id'
+    | '/registros/$id'
     | '/registros/novo'
+    | '/registros/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -130,7 +152,9 @@ export interface FileRouteTypes {
     | '/novo-alerta'
     | '/alerta/$id'
     | '/ocorrencia/$id'
+    | '/registros/$id'
     | '/registros/novo'
+    | '/registros'
   id:
     | '__root__'
     | '/'
@@ -142,7 +166,9 @@ export interface FileRouteTypes {
     | '/_authenticated/novo-alerta'
     | '/_authenticated/alerta/$id'
     | '/_authenticated/ocorrencia/$id'
+    | '/_authenticated/registros/$id'
     | '/_authenticated/registros/novo'
+    | '/_authenticated/registros/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -216,6 +242,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOcorrenciaIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/registros/': {
+      id: '/_authenticated/registros/'
+      path: '/registros'
+      fullPath: '/registros/'
+      preLoaderRoute: typeof AuthenticatedRegistrosIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/registros/$id': {
+      id: '/_authenticated/registros/$id'
+      path: '/registros/$id'
+      fullPath: '/registros/$id'
+      preLoaderRoute: typeof AuthenticatedRegistrosIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/registros/novo': {
       id: '/_authenticated/registros/novo'
       path: '/registros/novo'
@@ -233,7 +273,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedNovoAlertaRoute: typeof AuthenticatedNovoAlertaRoute
   AuthenticatedAlertaIdRoute: typeof AuthenticatedAlertaIdRoute
   AuthenticatedOcorrenciaIdRoute: typeof AuthenticatedOcorrenciaIdRoute
+  AuthenticatedRegistrosIdRoute: typeof AuthenticatedRegistrosIdRoute
   AuthenticatedRegistrosNovoRoute: typeof AuthenticatedRegistrosNovoRoute
+  AuthenticatedRegistrosIndexRoute: typeof AuthenticatedRegistrosIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -243,7 +285,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedNovoAlertaRoute: AuthenticatedNovoAlertaRoute,
   AuthenticatedAlertaIdRoute: AuthenticatedAlertaIdRoute,
   AuthenticatedOcorrenciaIdRoute: AuthenticatedOcorrenciaIdRoute,
+  AuthenticatedRegistrosIdRoute: AuthenticatedRegistrosIdRoute,
   AuthenticatedRegistrosNovoRoute: AuthenticatedRegistrosNovoRoute,
+  AuthenticatedRegistrosIndexRoute: AuthenticatedRegistrosIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
