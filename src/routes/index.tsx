@@ -30,6 +30,31 @@ export const Route = createFileRoute("/")({
 });
 
 function Inicio() {
+  const navigate = useNavigate();
+  const [liberado, setLiberado] = useState(false);
+
+  useEffect(() => {
+    let ativo = true;
+    (async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (!ativo) return;
+      if (error || !data.user) {
+        navigate({ to: "/auth", replace: true });
+        return;
+      }
+      const perfil = await carregarPerfil();
+      if (!ativo) return;
+      if (perfil === "autoridade") {
+        navigate({ to: "/central", replace: true });
+        return;
+      }
+      setLiberado(true);
+    })();
+    return () => {
+      ativo = false;
+    };
+  }, [navigate]);
+
   const { data: escola } = useQuery({
     queryKey: ["escola"],
     queryFn: async () => {
