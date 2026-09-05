@@ -1,5 +1,6 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { AlertTriangle, ChevronRight, MapPin } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -10,12 +11,6 @@ import { carregarPerfil } from "@/lib/autoridades";
 
 export const Route = createFileRoute("/")({
   ssr: false,
-  beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
-    const perfil = await carregarPerfil();
-    if (perfil === "autoridade") throw redirect({ to: "/central" });
-  },
   head: () => ({
     meta: [
       { title: "Painel de Emergência | Rede de Segurança Escolar" },
