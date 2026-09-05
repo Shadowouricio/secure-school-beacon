@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ShieldAlert, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -34,6 +34,9 @@ function AuthPage() {
   const navigate = useNavigate();
   const [carregando, setCarregando] = useState(false);
   const [orgao, setOrgao] = useState<Orgao>("policia");
+  const [montado, setMontado] = useState(false);
+  useEffect(() => setMontado(true), []);
+  if (!montado) return null;
 
 
   async function irParaPainel() {

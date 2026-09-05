@@ -1,5 +1,6 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { AlertTriangle, ChevronRight, MapPin } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -10,12 +11,6 @@ import { carregarPerfil } from "@/lib/autoridades";
 
 export const Route = createFileRoute("/")({
   ssr: false,
-  beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
-    const perfil = await carregarPerfil();
-    if (perfil === "autoridade") throw redirect({ to: "/central" });
-  },
   head: () => ({
     meta: [
       { title: "Painel de Emergência | Rede de Segurança Escolar" },
@@ -35,8 +30,34 @@ export const Route = createFileRoute("/")({
 });
 
 function Inicio() {
+  const navigate = useNavigate();
+  const [liberado, setLiberado] = useState(false);
+
+  useEffect(() => {
+    let ativo = true;
+    (async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (!ativo) return;
+      if (error || !data.user) {
+        navigate({ to: "/auth", replace: true });
+        return;
+      }
+      const perfil = await carregarPerfil();
+      if (!ativo) return;
+      if (perfil === "autoridade") {
+        navigate({ to: "/central", replace: true });
+        return;
+      }
+      setLiberado(true);
+    })();
+    return () => {
+      ativo = false;
+    };
+  }, [navigate]);
+
   const { data: escola } = useQuery({
     queryKey: ["escola"],
+    enabled: liberado,
     queryFn: async () => {
       const { data, error } = await supabase.from("escolas").select("*").maybeSingle();
       if (error) throw error;
@@ -46,6 +67,7 @@ function Inicio() {
 
   const { data: ultimos } = useQuery({
     queryKey: ["alertas", "recentes"],
+    enabled: liberado,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("alertas")
@@ -60,7 +82,7 @@ function Inicio() {
 
   useRealtimeAlertas("escola-inicio", [["alertas"]]);
 
-
+  if (!liberado) return null;
 
   return (
     <AppShell titulo={escola?.nome ?? "Escola"}>
