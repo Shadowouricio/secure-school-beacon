@@ -34,6 +34,9 @@ function AuthPage() {
   const navigate = useNavigate();
   const [carregando, setCarregando] = useState(false);
   const [orgao, setOrgao] = useState<Orgao>("policia");
+  const [montado, setMontado] = useState(false);
+  useEffect(() => setMontado(true), []);
+  if (!montado) return null;
 
 
   async function irParaPainel() {
