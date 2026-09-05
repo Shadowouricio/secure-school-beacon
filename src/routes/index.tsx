@@ -67,6 +67,7 @@ function Inicio() {
 
   const { data: ultimos } = useQuery({
     queryKey: ["alertas", "recentes"],
+    enabled: liberado,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("alertas")
@@ -81,7 +82,7 @@ function Inicio() {
 
   useRealtimeAlertas("escola-inicio", [["alertas"]]);
 
-
+  if (!liberado) return null;
 
   return (
     <AppShell titulo={escola?.nome ?? "Escola"}>
