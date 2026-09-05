@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ShieldAlert, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ORGAOS, carregarPerfil, type Orgao } from "@/lib/autoridades";
 
 export const Route = createFileRoute("/auth")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Acesso da Escola | Rede de Segurança Escolar" },
