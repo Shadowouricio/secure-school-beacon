@@ -57,6 +57,7 @@ function Inicio() {
 
   const { data: escola } = useQuery({
     queryKey: ["escola"],
+    enabled: liberado,
     queryFn: async () => {
       const { data, error } = await supabase.from("escolas").select("*").maybeSingle();
       if (error) throw error;
