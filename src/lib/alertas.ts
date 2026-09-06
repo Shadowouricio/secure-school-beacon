@@ -112,16 +112,36 @@ export function abrirNavegacao(latitude: number, longitude: number, rotulo?: str
       ? `geo:${destino}?q=${destino}(${encodeURIComponent(rotulo ?? "Ocorrência")})`
       : null;
 
+  // Abrir sempre o mapa na web garante funcionamento em qualquer navegador,
+  // inclusive dentro de iframes onde window.open pode ser bloqueado.
+  const abrirWeb = () => {
+    const janela = window.open(web, "_blank", "noopener");
+    if (!janela) {
+      const a = document.createElement("a");
+      a.href = web;
+      a.target = "_blank";
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+  };
+
   if (nativo) {
-    // Se nenhum app de mapas atender, cai para o Google Maps na web.
+    // Tenta o app nativo; se nada abrir, cai para o Google Maps na web.
     const inicio = Date.now();
-    window.location.href = nativo;
+    try {
+      window.location.href = nativo;
+    } catch {
+      abrirWeb();
+      return;
+    }
     window.setTimeout(() => {
-      if (Date.now() - inicio < 2000 && !document.hidden) window.open(web, "_blank", "noopener");
+      if (Date.now() - inicio < 2000 && !document.hidden) abrirWeb();
     }, 1200);
     return;
   }
-  window.open(web, "_blank", "noopener");
+  abrirWeb();
 }
 
 
@@ -145,7 +165,16 @@ export function capturarLocalizacao(): Promise<Localizacao> {
               origem: "dispositivo",
             })
           : reject(new Error("O dispositivo retornou uma localização inválida.")),
-      (err) => reject(new Error(err.message || "Não foi possível obter a localização.")),
+      (err) =>
+        reject(
+          new Error(
+            err.code === err.PERMISSION_DENIED
+              ? "Permissão de localização negada. Autorize o acesso ao GPS nas configurações do navegador."
+              : err.code === err.TIMEOUT
+                ? "O GPS demorou para responder. Tente novamente em área aberta."
+                : err.message || "Não foi possível obter a localização.",
+          ),
+        ),
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
     );
   });
