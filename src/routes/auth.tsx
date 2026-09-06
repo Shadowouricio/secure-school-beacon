@@ -122,6 +122,19 @@ function AuthPage() {
       toast.error("Não foi possível cadastrar", { description: error?.message });
       return;
     }
+    if (!data.session) {
+      const { error: erroLogin } = await supabase.auth.signInWithPassword({
+        email: String(form.get("email")).trim(),
+        password: String(form.get("senha")),
+      });
+      if (erroLogin) {
+        setCarregando(false);
+        toast.error("Cadastro criado, mas não foi possível entrar", {
+          description: erroLogin.message,
+        });
+        return;
+      }
+    }
     const uid = data.user.id;
     const { error: erroPerfil } = await supabase.from("autoridades").insert({
       id: uid,
