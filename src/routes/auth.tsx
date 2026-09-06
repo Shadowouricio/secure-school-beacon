@@ -80,14 +80,30 @@ function AuthPage() {
         },
       },
     });
-    if (!error && data.user) {
-      await supabase.from("user_roles").insert({ user_id: data.user.id, role: "escola" });
-    }
-    setCarregando(false);
     if (error) {
+      setCarregando(false);
       toast.error("Não foi possível cadastrar", { description: error.message });
       return;
     }
+    // Garante sessão ativa mesmo quando o cadastro não retorna sessão.
+    if (!data.session) {
+      const { error: erroLogin } = await supabase.auth.signInWithPassword({
+        email: String(form.get("email")).trim(),
+        password: String(form.get("senha")),
+      });
+      if (erroLogin) {
+        setCarregando(false);
+        toast.error("Cadastro criado, mas não foi possível entrar", {
+          description: erroLogin.message,
+        });
+        return;
+      }
+    }
+    const { data: sessao } = await supabase.auth.getUser();
+    if (sessao.user) {
+      await supabase.from("user_roles").insert({ user_id: sessao.user.id, role: "escola" });
+    }
+    setCarregando(false);
     toast.success("Instituição cadastrada com sucesso");
     navigate({ to: "/" });
   }
