@@ -165,7 +165,16 @@ export function capturarLocalizacao(): Promise<Localizacao> {
               origem: "dispositivo",
             })
           : reject(new Error("O dispositivo retornou uma localização inválida.")),
-      (err) => reject(new Error(err.message || "Não foi possível obter a localização.")),
+      (err) =>
+        reject(
+          new Error(
+            err.code === err.PERMISSION_DENIED
+              ? "Permissão de localização negada. Autorize o acesso ao GPS nas configurações do navegador."
+              : err.code === err.TIMEOUT
+                ? "O GPS demorou para responder. Tente novamente em área aberta."
+                : err.message || "Não foi possível obter a localização.",
+          ),
+        ),
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
     );
   });
