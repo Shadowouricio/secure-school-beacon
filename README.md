@@ -90,3 +90,12 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Rodando localmente
+
+1. `npm install`
+2. Copie `.env.example` para `.env` e preencha os valores do backend.
+3. `npm run dev`
+
+O servidor de desenvolvimento roda em **http://localhost:8080** (nao em 5173).
+Rotas disponiveis: `/`, `/auth`, `/central`, `/registros`, entre outras.
