@@ -2,10 +2,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { audioLiberado, habilitarAudio, tocarSirene } from "@/lib/alarme";
 
-const INTERVALO_MS = 15000;
+const INTERVALO_MS = 10000;
 
 /**
- * Mantém o alarme sonoro tocando a cada 15s enquanto houver alertas de
+ * Mantém o alarme sonoro tocando a cada 10s enquanto houver alertas de
  * emergência aguardando confirmação de recebimento. Parar somente quando o
  * status `recebimento_confirmado` (ou posterior) for registrado.
  */
